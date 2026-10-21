@@ -177,14 +177,14 @@ function todayView() {
     goal = goalAt(data.goals, date),
     remaining = goal ? goal.kcal - n.kcal : null,
     progress = goal ? Math.min(100, (n.kcal / goal.kcal) * 100) : 0;
-  return `${pageHead("DEIN TAGESÜBERBLICK", date === today() ? "Heute zählt dein Alltag." : "Dein Tag im Überblick.", "Mahlzeiten festhalten. Deinen eigenen Rhythmus finden.", btn(icon("plus") + " Mahlzeit hinzufügen", "choose-meal", "", "button primary"))}${dateControls()}<section class="overview" aria-label="Tageswerte"><div class="calorie-card"><div class="card-label">KALORIEN ${date === today() ? "HEUTE" : "AN DIESEM TAG"} <span>kcal</span></div><div class="calorie-main"><div class="ring" style="--progress:${progress}%" role="img" aria-label="${fmt(n.kcal)} Kilokalorien${goal ? " von " + fmt(goal.kcal) : ""}"><div><strong>${fmt(n.kcal)}</strong><span>aufgenommen</span></div></div><div class="goal-info"><span>${goal ? (remaining >= 0 ? "Noch übrig" : "Über deinem Ziel") : "Dein Tagesziel"}</span><strong>${goal ? fmt(Math.abs(remaining)) : "—"} ${goal ? "<small>kcal</small>" : ""}</strong><p>${goal ? (remaining >= 0 ? "von " + fmt(goal.kcal) + " kcal Tagesziel" : fmt(Math.abs(remaining)) + " kcal über deinem Ziel") : "Du bestimmst, was zu dir passt."}</p>${goal ? '<span class="subtle">Jeder Tag darf anders sein.</span>' : btn("Ziel festlegen →", "nav", 'data-page="settings"', "text-button")}</div></div></div><div class="macro-card"><div class="card-label">DEINE MAKRONÄHRSTOFFE <span>in Gramm</span></div>${[
+  return `${pageHead("DEIN TAGESÜBERBLICK", date === today() ? "Heute zählt dein Alltag." : "Dein Tag im Überblick.", "Mahlzeiten festhalten. Deinen eigenen Rhythmus finden.", btn(icon("plus") + " Mahlzeit hinzufügen", "choose-meal", "", "button primary"))}${dateControls()}<section class="overview" aria-label="Tageswerte"><div class="calorie-card"><div class="card-label">KALORIEN ${date === today() ? "HEUTE" : "AN DIESEM TAG"} <span class="goal-tools">kcal ${btn(icon("edit", 14) + " Bearbeiten", "edit-goal", 'data-focus="kcal" aria-label="Kalorienziel bearbeiten"', "goal-edit")}</span></div><div class="calorie-main"><div class="ring" style="--progress:${progress}%" role="img" aria-label="${fmt(n.kcal)} Kilokalorien${goal ? " von " + fmt(goal.kcal) : ""}"><div><strong>${fmt(n.kcal)}</strong><span>aufgenommen</span></div></div><div class="goal-info"><span>${goal ? (remaining >= 0 ? "Noch übrig" : "Über deinem Ziel") : "Dein Tagesziel"}</span><strong>${goal ? fmt(Math.abs(remaining)) : "—"} ${goal ? "<small>kcal</small>" : ""}</strong><p>${goal ? (remaining >= 0 ? "von " + fmt(goal.kcal) + " kcal Tagesziel" : fmt(Math.abs(remaining)) + " kcal über deinem Ziel") : "Du bestimmst, was zu dir passt."}</p>${goal ? '<span class="subtle">Jeder Tag darf anders sein.</span>' : btn("Ziel festlegen →", "edit-goal", 'data-focus="kcal"', "text-button")}</div></div></div><div class="macro-card"><div class="card-label">DEINE MAKRONÄHRSTOFFE <span class="goal-tools">in Gramm ${btn(icon("edit", 14) + " Bearbeiten", "edit-goal", 'data-focus="protein" aria-label="Makronährstoffziele bearbeiten"', "goal-edit")}</span></div>${[
     ["protein", "Eiweiß", "p"],
     ["carbs", "Kohlenhydrate", "c"],
     ["fat", "Fett", "f"],
   ]
     .map(
       ([k, l, c]) =>
-        `<div class="macro-row"><div><span class="dot ${c}"></span>${l}<strong>${fmt(n[k], 1)} <small>g${goal?.[k] != null ? " / " + fmt(goal[k]) + " g" : ""}</small></strong></div><div class="track"><span class="${c}" style="width:${goal?.[k] > 0 ? Math.min(100, (n[k] / goal[k]) * 100) : 0}%"></span></div></div>`,
+        `<div class="macro-row"><div><span class="dot ${c}"></span>${l}<strong>${fmt(n[k], 1)} <small>g${goal?.[k] != null ? " / " + fmt(goal[k], 1) + " g" : ""}</small></strong></div><div class="track"><span class="${c}" style="width:${goal?.[k] > 0 ? Math.min(100, (n[k] / goal[k]) * 100) : 0}%"></span></div></div>`,
     )
     .join(
       "",
@@ -589,6 +589,18 @@ function settingsView() {
       : ""
   }</section><div class="settings-stack"><section class="panel"><h2>Darstellung</h2><p class="muted">So, wie es sich für dich gut anfühlt.</p><div class="theme-options">${btn(icon("sun") + " Hell", "theme", 'data-theme="light" aria-pressed="' + (data.theme === "light") + '"', "button " + (data.theme === "light" ? "primary" : "secondary"))}${btn(icon("moon") + " Dunkel", "theme", 'data-theme="dark" aria-pressed="' + (data.theme === "dark") + '"', "button " + (data.theme === "dark" ? "primary" : "secondary"))}</div><p class="micro">Zahlen und Datumsangaben werden im deutschen Format angezeigt.</p></section><section class="panel"><h2>Deine Daten gehören dir.</h2><p class="muted">Lebensmittel, Einträge, Rezepte und Ziele werden lokal in diesem Browser auf diesem Gerät gespeichert. Ohne Anmeldung und ohne Cloud-Synchronisierung.</p><p class="micro">Beim Löschen von Browserdaten können sie verloren gehen. Sichere deine Daten regelmäßig als JSON-Datei. Die Datei enthält dein vollständiges Ernährungstagebuch.</p><div class="data-actions">${btn(icon("download") + " Daten exportieren", "export", "", "button secondary")}<label class="button secondary file-label">${icon("plus")} Daten importieren<input type="file" id="import-file" accept="application/json,.json"></label></div><hr>${btn("Alle gespeicherten Daten löschen", "reset", "", "text-button danger")}</section></div></div>`;
 }
+function goalDialog(focus) {
+  const g = goalAt(data.goals, date);
+  openDialog(
+    focus === "kcal"
+      ? "Kalorienziel bearbeiten"
+      : "Makronährstoffziele bearbeiten",
+    `<form id="goal-dialog-form" novalidate>${dateInput(date, "date", "Gültig ab")}${numInput("kcal", "Kalorienziel (kcal)", g?.kcal ?? "")}<h3>Makronährstoffziele <span class="optional">optional</span></h3><div class="form-grid">${numInput("protein", "Eiweiß (g)", g?.protein ?? "", true)}${numInput("carbs", "Kohlenhydrate (g)", g?.carbs ?? "", true)}${numInput("fat", "Fett (g)", g?.fat ?? "", true)}</div><p class="micro">Die Ziele gelten ab dem gewählten Datum. Frühere Tage behalten ihr bisheriges Ziel. Du kannst Makroziele leer lassen.</p><p class="form-error" role="alert"></p><div class="dialog-footer">${btn("Abbrechen", "close", "", "button secondary")}<button class="button primary" type="submit">Ziele speichern</button></div></form>`,
+  );
+  requestAnimationFrame(() =>
+    modal.querySelector(`[name="${focus}"]`)?.focus(),
+  );
+}
 function exportData(raw = false) {
   const content = raw
     ? localStorage.getItem(STORAGE)
@@ -688,7 +700,8 @@ document.addEventListener("click", (e) => {
       modal.querySelector(`[data-action="favorite"][data-id="${id}"]`)?.focus();
     } else
       app.querySelector(`[data-action="favorite"][data-id="${id}"]`)?.focus();
-  } else if (a === "new-food") foodEditor();
+  } else if (a === "edit-goal") goalDialog(b.dataset.focus);
+  else if (a === "new-food") foodEditor();
   else if (a === "edit-food") foodEditor(findFood(id));
   else if (a === "cancel-food") {
     if (context.returnToPicker) picker();
@@ -851,7 +864,7 @@ document.addEventListener("submit", (e) => {
       )
     )
       closeDialog();
-  } else if (form.id === "goal-form") {
+  } else if (form.id === "goal-form" || form.id === "goal-dialog-form") {
     const kcal = getNumber(form, "kcal", { positive: true }),
       vals = Object.fromEntries(
         ["protein", "carbs", "fat"].map((k) => [
@@ -869,10 +882,17 @@ document.addEventListener("submit", (e) => {
         "Bitte prüfe dein Datum und die markierten Zielwerte.";
       return;
     }
-    change((d) => {
-      d.goals = d.goals.filter((g) => g.date !== dt);
-      d.goals.push({ date: dt, kcal, ...vals });
-    }, "Deine Ziele wurden gespeichert.");
+    if (
+      change((d) => {
+        d.goals = d.goals.filter((g) => g.date !== dt);
+        d.goals.push({ date: dt, kcal, ...vals });
+      }, "Deine Ziele wurden gespeichert.") &&
+      form.id === "goal-dialog-form"
+    ) {
+      date = dt;
+      render();
+      closeDialog();
+    }
   }
 });
 window.addEventListener("storage", (e) => {
