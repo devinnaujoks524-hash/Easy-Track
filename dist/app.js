@@ -173,10 +173,9 @@ function dateControls() {
 }
 function waterView() {
   const count = data.water?.[date] ?? 0;
-  const slots = Math.max(8, count);
-  return `<section class="water-card" aria-labelledby="water-title"><div class="water-heading"><div><span class="card-label">WASSER</span><h2 id="water-title">Dein Trinküberblick</h2><p>Ein Glas entspricht 250 ml.</p></div><strong>${fmt(count * 250)} <small>ml</small></strong></div><div class="water-glasses" aria-label="Getrunkene Gläser">${Array.from({ length: slots }, (_, i) => `<button type="button" class="water-glass ${i < count ? "filled" : ""}" data-action="water-set" data-count="${i + 1}" aria-label="${i + 1} ${i === 0 ? "Glas" : "Gläser"} · ${(i + 1) * 250} ml${i < count ? " · gefüllt" : ""}" aria-pressed="${i < count}"><span class="water-shape"><span class="water-fill"></span></span><span class="water-number">${i + 1}</span></button>`).join("")}</div><div class="water-actions"><span>${count} ${count === 1 ? "Glas" : "Gläser"} getrunken · Tippe auf ein Glas, um den Stand zu ändern.</span>${btn(icon("plus", 16) + " 250 ml", "water-add", "", "button small secondary")}</div></section>`;
-}
-function todayView() {
+  const slots = Math.max(4, count);
+  return `<section class="water-card" aria-labelledby="water-title"><div class="water-heading"><div><h2 id="water-title">Wasser <small>· 250 ml je Glas</small></h2><p>Tippe auf ein Glas zum Füllen oder Zurücknehmen.</p></div><strong>${fmt(count * 250)} <small>ml</small></strong></div><div class="water-glasses" aria-label="Getrunkene Gläser">${Array.from({ length: slots }, (_, i) => `<button type="button" class="water-glass ${i < count ? "filled" : ""}" data-action="water-set" data-count="${i + 1}" aria-label="${i + 1} ${i === 0 ? "Glas" : "Gläser"} · ${(i + 1) * 250} ml${i < count ? " · gefüllt" : ""}" aria-pressed="${i < count}"><span class="water-shape"><span class="water-fill"></span></span><span class="water-number">${i + 1}</span></button>`).join("")}${btn(icon("plus", 16), "water-add", 'aria-label="Ein Glas Wasser hinzufügen, 250 ml"', "water-add-button")}</div></section>`;
+}function todayView() {
   const entries = data.entries.filter((e) => e.date === date),
     n = sum(entries),
     goal = goalAt(data.goals, date),

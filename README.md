@@ -25,7 +25,7 @@ Der Ordner `dist/` ist die vollständige statische Website und lässt sich auf e
 ## Funktionen
 
 - **Heute:** Nach der Datumsnavigation stehen Kalorien und Makros direkt oben; darunter folgt die Wasseranzeige mit 250-ml-Gläsern, anschließend Mahlzeiten und der zentrale Hinzufügen-Button. Die Übersicht zeigt Kalorienring, Tagesziel, verbleibende Kalorien und eine sachliche Anzeige bei Überschreitung. Kleine Bearbeiten-Buttons an Kalorien und Makros öffnen die Zielwerte direkt für den ausgewählten Tag.
-- **Wasser:** Ein Tipp auf ein Glas füllt die Anzeige bis zu diesem Glas. Ein erneuter Tipp auf das zuletzt gefüllte Glas nimmt 250 ml zurück; über „+ 250 ml“ lassen sich weitere Gläser hinzufügen. Der Stand wird für jeden lokalen Kalendertag separat gespeichert.
+- **Wasser:** Die kompakte Gläserzeile zeigt jeweils 250 ml. Ein Tipp auf ein Glas füllt die Anzeige bis zu diesem Glas; ein erneuter Tipp auf das zuletzt gefüllte Glas nimmt 250 ml zurück. Über den Plus-Button lassen sich weitere Gläser hinzufügen. Der Stand wird für jeden lokalen Kalendertag separat gespeichert.
 - **Erfassen:** Suche nach Name/Marke, Favoriten, deduplizierte letzte Lebensmittel, Gramm, Milliliter und klar definierte Portionen, Dezimalkomma, sofortige Nährwertvorschau und Feldvalidierung.
 - **Lebensmittel:** 16 explizit gekennzeichnete Beispiellebensmittel sowie eigene Lebensmittel mit optionaler Marke und Portionsdefinition; bearbeiten und löschen.
 - **Einträge:** Menge, Datum und Mahlzeit ändern; löschen und zehn Sekunden lang rückgängig machen; einzelne Einträge oder vollständige Mahlzeiten auf ein frei gewähltes Datum und in einen Mahlzeitenbereich kopieren.
