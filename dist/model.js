@@ -181,7 +181,9 @@ export function validateData(d) {
       (g) =>
         g &&
         validDate(g.date) &&
-        finite(g.kcal, 0.000001, 1e6) &&
+        (g.kcal === null || finite(g.kcal, 0.000001, 1e6)) &&
+        (g.kcal !== null ||
+          ["protein", "carbs", "fat"].some((k) => g[k] !== null)) &&
         ["protein", "carbs", "fat"].every(
           (k) => g[k] === null || finite(g[k], 0, 1e6),
         ),
