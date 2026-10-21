@@ -2352,3 +2352,15 @@ dialog[open]::backdrop {
 .calorie-main:has(> .ring:only-child) {
   justify-content: center;
 }
+
+/* Kalorienkarte ohne Kasten */
+.calorie-card {
+  background: none;
+  border: 0;
+  box-shadow: none;
+  padding-left: 0;
+  padding-right: 0;
+}
+.calorie-card:hover {
+  box-shadow: none;
+}
