@@ -102,11 +102,53 @@ function toast(message, undo) {
     undo ? 10000 : 5000,
   );
 }
+let morphOrigin = null,
+  morphBack = null,
+  morphButton = null,
+  closeAnim = null;
+const canMorph = () =>
+  typeof modal.animate === "function" &&
+  !window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+function morphTransform(from) {
+  const to = modal.getBoundingClientRect();
+  const dx = from.left + from.width / 2 - (to.left + to.width / 2);
+  const dy = from.top + from.height / 2 - (to.top + to.height / 2);
+  return `translate(${dx}px, ${dy}px) scale(${from.width / to.width}, ${from.height / to.height})`;
+}
+function morphIn(from) {
+  const ease = "cubic-bezier(0.2, 1.2, 0.3, 1)";
+  modal.animate(
+    [
+      { transform: morphTransform(from), borderRadius: "48px" },
+      { transform: "none", borderRadius: "24px" },
+    ],
+    { duration: 560, easing: ease },
+  );
+  modal.querySelectorAll(".dialog-head, .dialog-body").forEach((el) =>
+    el.animate(
+      [{ opacity: 0 }, { opacity: 0, offset: 0.4 }, { opacity: 1 }],
+      { duration: 560, easing: "ease-out" },
+    ),
+  );
+}
 function openDialog(title, body, wide = false) {
+  if (closeAnim) {
+    closeAnim.cancel();
+    closeAnim = null;
+  }
   if (!modal.open) restoreFocus = document.activeElement;
   modal.className = wide ? "wide" : "";
   modal.innerHTML = `<div class="dialog-head"><h2 id="dialog-title">${title}</h2>${btn(icon("close"), "close", 'aria-label="Dialog schließen"', "icon-button")}</div><div class="dialog-body">${body}</div>`;
-  if (!modal.open) modal.showModal();
+  const origin = morphOrigin;
+  morphOrigin = null;
+  if (!modal.open) {
+    modal.showModal();
+    morphBack = origin && canMorph() ? origin : null;
+    if (morphBack) {
+      modal.classList.add("morph");
+      morphIn(morphBack);
+    }
+  }
   requestAnimationFrame(() => {
     (
       modal.querySelector("[autofocus]") ||
@@ -116,9 +158,38 @@ function openDialog(title, body, wide = false) {
   });
 }
 function closeDialog() {
+  if (morphBack && modal.open && canMorph()) {
+    if (closeAnim) return;
+    const from = morphBack;
+    const a = (closeAnim = modal.animate(
+      [
+        { transform: "none", opacity: 1, borderRadius: "24px" },
+        { transform: morphTransform(from), opacity: 0.2, borderRadius: "48px" },
+      ],
+      { duration: 320, easing: "cubic-bezier(0.5, 0, 0.75, 0.4)", fill: "forwards" },
+    ));
+    a.onfinish = () => {
+      if (closeAnim !== a) return;
+      closeAnim = null;
+      modal.close();
+    };
+    return;
+  }
   modal.close();
 }
+modal.addEventListener("cancel", (e) => {
+  if (morphBack && canMorph()) {
+    e.preventDefault();
+    closeDialog();
+  }
+});
 modal.addEventListener("close", () => {
+  morphBack = null;
+  modal.getAnimations?.().forEach((a) => a.cancel());
+  if (morphButton) {
+    morphButton.style.visibility = "";
+    morphButton = null;
+  }
   if (restoreFocus?.isConnected) restoreFocus.focus();
   else $("#page-title")?.focus();
 });
@@ -749,7 +820,14 @@ document.addEventListener("click", (e) => {
       modal.querySelector(`[data-action="favorite"][data-id="${id}"]`)?.focus();
     } else
       app.querySelector(`[data-action="favorite"][data-id="${id}"]`)?.focus();
-  } else if (a === "edit-goal") goalDialog(b.dataset.focus);
+  } else if (a === "edit-goal") {
+    if (canMorph()) {
+      morphOrigin = b.getBoundingClientRect();
+      morphButton = b;
+      b.style.visibility = "hidden";
+    }
+    goalDialog(b.dataset.focus);
+  }
   else if (a === "new-food") foodEditor();
   else if (a === "edit-food") foodEditor(findFood(id));
   else if (a === "cancel-food") {

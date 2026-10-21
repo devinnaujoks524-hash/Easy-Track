@@ -2364,3 +2364,12 @@ dialog[open]::backdrop {
 .calorie-card:hover {
   box-shadow: none;
 }
+
+/* Bearbeiten-Dialog wächst aus dem Button (Dynamic-Island-Effekt) */
+dialog.morph[open] {
+  animation: none;
+  transform-origin: center;
+}
+dialog.morph[open]::backdrop {
+  animation: fade 0.35s ease-out;
+}
