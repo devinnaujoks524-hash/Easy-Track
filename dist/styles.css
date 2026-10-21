@@ -429,6 +429,29 @@ main {
   letter-spacing: 0;
   color: var(--muted);
 }
+.card-label .goal-tools {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  white-space: nowrap;
+}
+.goal-edit {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  min-height: 32px;
+  padding: 4px 6px;
+  border-radius: 7px;
+  background: var(--surface);
+  color: var(--green);
+  font-size: 11px;
+  font-weight: 650;
+  letter-spacing: 0;
+}
+.goal-edit:hover {
+  background: var(--green-soft);
+}
 .calorie-main {
   display: flex;
   align-items: center;
@@ -1535,6 +1558,9 @@ textarea {
   }
   .card-label {
     font-size: 9px;
+  }
+  .card-label .goal-tools {
+    gap: 4px;
   }
   .meal-grid {
     gap: 14px;

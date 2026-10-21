@@ -24,7 +24,7 @@ Der Ordner `dist/` ist die vollständige statische Website und lässt sich auf e
 
 ## Funktionen
 
-- **Heute:** lokale Datumsnavigation, Kalorienring, Tagesziel, verbleibende Kalorien und sachliche Anzeige bei Überschreitung, Makros und vier Mahlzeitenbereiche.
+- **Heute:** lokale Datumsnavigation, Kalorienring, Tagesziel, verbleibende Kalorien und sachliche Anzeige bei Überschreitung, Makros und vier Mahlzeitenbereiche. Kleine Bearbeiten-Buttons an Kalorien und Makros öffnen die Zielwerte direkt für den ausgewählten Tag.
 - **Erfassen:** Suche nach Name/Marke, Favoriten, deduplizierte letzte Lebensmittel, Gramm, Milliliter und klar definierte Portionen, Dezimalkomma, sofortige Nährwertvorschau und Feldvalidierung.
 - **Lebensmittel:** 16 explizit gekennzeichnete Beispiellebensmittel sowie eigene Lebensmittel mit optionaler Marke und Portionsdefinition; bearbeiten und löschen.
 - **Einträge:** Menge, Datum und Mahlzeit ändern; löschen und zehn Sekunden lang rückgängig machen; einzelne Einträge oder vollständige Mahlzeiten auf ein frei gewähltes Datum und in einen Mahlzeitenbereich kopieren.
@@ -56,7 +56,7 @@ tests/app.test.mjs    Integrationstests mit Formularen, Events und Local Storage
 
 ## Prüfung
 
-12 automatisierte Tests bestehen. Sie prüfen insbesondere Anlegen und Erfassen, Mengenänderungen und Summen, Löschen/Rückgängig, Mahlzeitenkopien, Rezeptzutaten und Teilportionen, unveränderliche historische Nährwerte, Zielwechsel, Reload, Export-/Import-Rundlauf, fehlerhafte Importe, ungültige Mengen, Datumsgrenzen und Schutz beschädigter Daten.
+13 automatisierte Tests bestehen. Sie prüfen insbesondere Anlegen und Erfassen, Mengenänderungen und Summen, Löschen/Rückgängig, Mahlzeitenkopien, Rezeptzutaten und Teilportionen, unveränderliche historische Nährwerte, direkte Zielbearbeitung, Zielwechsel, Reload, Export-/Import-Rundlauf, fehlerhafte Importe, ungültige Mengen, Datumsgrenzen und Schutz beschädigter Daten.
 
 Zusätzlich im integrierten Chromium-Browser geprüft: eigenes Lebensmittel mit Dezimalkomma anlegen, 1,5 Portionen erfassen, korrekte Kalorien-/Makroanzeige, Neuladen sowie die responsive Ansicht bei 390 Pixel Breite. Die Integrationstests verwenden jsdom; sie ersetzen keine umfassende Prüfung in Safari/Firefox oder mit einem Screenreader.
 
