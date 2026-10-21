@@ -591,8 +591,8 @@ main {
   padding: 23px 26px;
 }
 .water-card {
-  padding: 16px 20px 14px;
-  margin-bottom: 26px;
+  padding: 10px 16px 8px;
+  margin-bottom: 20px;
   --water: #2a8fd0;
   --water-soft: #dceffb;
 }
@@ -604,19 +604,19 @@ main {
 }
 .water-heading h2 {
   margin: 0;
-  font-size: 16px;
+  font-size: 14px;
 }
 .water-heading h2 small {
   color: var(--muted);
   font: 500 11px "DM Sans", sans-serif;
 }
 .water-heading p {
-  margin: 2px 0 0;
+  margin: 0;
   color: var(--muted);
-  font-size: 11px;
+  font-size: 10px;
 }
 .water-heading > strong {
-  font: 750 23px Manrope, sans-serif;
+  font: 750 18px Manrope, sans-serif;
   color: var(--water);
   white-space: nowrap;
 }
@@ -625,10 +625,10 @@ main {
 }
 .water-glasses {
   display: flex;
-  gap: 3px;
-  margin-top: 10px;
+  gap: 2px;
+  margin-top: 4px;
   overflow-x: auto;
-  padding: 3px 1px 6px;
+  padding: 2px 1px 4px;
   scrollbar-width: thin;
 }
 .water-glass,
@@ -636,11 +636,11 @@ main {
   display: grid;
   justify-items: center;
   align-content: center;
-  flex: 0 0 36px;
-  gap: 1px;
-  height: 66px;
+  flex: 0 0 28px;
+  gap: 0;
+  height: 46px;
   border: 1px solid transparent;
-  border-radius: 12px;
+  border-radius: 10px;
   background: none;
   color: var(--muted);
 }
@@ -654,8 +654,8 @@ main {
   color: var(--water);
 }
 .glass-svg {
-  width: 27px;
-  height: 40px;
+  width: 19px;
+  height: 28px;
   overflow: visible;
 }
 .glass-body {
@@ -695,7 +695,8 @@ main {
   transform: translateY(-2px);
 }
 .water-number {
-  font-size: 9px;
+  font-size: 8px;
+  line-height: 1.2;
   font-weight: 700;
 }
 .water-glass.filled {
@@ -1711,7 +1712,7 @@ textarea {
 }
 @media (max-width: 700px) {
   .water-card {
-    padding: 14px 16px 10px;
+    padding: 9px 12px 6px;
   }
   .meal-section-heading {
     align-items: stretch;
