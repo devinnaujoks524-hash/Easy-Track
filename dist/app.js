@@ -171,10 +171,26 @@ function pageHead(eyebrow, title, desc, action = "") {
 function dateControls() {
   return `<div class="date-controls">${btn(icon("left"), "day", 'data-delta="-1" aria-label="Vorheriger Tag"', "icon-button")}<label class="date-picker"><span>${dateText(date)}</span><input type="date" aria-label="Tag auswählen" min="1900-01-01" max="2200-12-31" id="selected-date" value="${date}"></label>${btn(icon("right"), "day", 'data-delta="1" aria-label="Nächster Tag"', "icon-button")}${btn("Heute", "today", "", "button small secondary")}</div>`;
 }
+let waterAnim = null;
+const GLASS_PATH = "M5 3H35L31 53Q30.6 57 27 57H13Q9.4 57 9 53Z";
+const WAVE_PATH = "M0 0Q5 -3 10 0T20 0T30 0T40 0T50 0T60 0T70 0T80 0V70H0Z";
+function glassSvg(i, anim) {
+  const cls = anim ? ` ${anim.type}` : "";
+  const delay = anim ? ` style="--delay:${anim.delay}ms"` : "";
+  return `<svg class="glass-svg${cls}"${delay} viewBox="0 0 40 60" aria-hidden="true" focusable="false"><defs><clipPath id="wc${i}"><path d="${GLASS_PATH}"/></clipPath></defs><path class="glass-body" d="${GLASS_PATH}"/><g clip-path="url(#wc${i})"><g class="lvl"><path class="wave wave-b" d="${WAVE_PATH}"/><path class="wave wave-a" d="${WAVE_PATH}"/></g><path class="shine" d="M12 9L14.6 47"/></g><path class="glass-outline" d="${GLASS_PATH}"/></svg>`;
+}
 function waterView() {
   const count = data.water?.[date] ?? 0;
   const slots = Math.max(4, count);
-  return `<section class="water-card" aria-labelledby="water-title"><div class="water-heading"><div><h2 id="water-title">Wasser <small>· 250 ml je Glas</small></h2><p>Tippe auf ein Glas zum Füllen oder Zurücknehmen.</p></div><strong>${fmt(count * 250)} <small>ml</small></strong></div><div class="water-glasses" aria-label="Getrunkene Gläser">${Array.from({ length: slots }, (_, i) => `<button type="button" class="water-glass ${i < count ? "filled" : ""}" data-action="water-set" data-count="${i + 1}" aria-label="${i + 1} ${i === 0 ? "Glas" : "Gläser"} · ${(i + 1) * 250} ml${i < count ? " · gefüllt" : ""}" aria-pressed="${i < count}"><span class="water-shape"><span class="water-fill"></span></span><span class="water-number">${i + 1}</span></button>`).join("")}${btn(icon("plus", 16), "water-add", 'aria-label="Ein Glas Wasser hinzufügen, 250 ml"', "water-add-button")}</div></section>`;
+  const anim = waterAnim;
+  waterAnim = null;
+  const animFor = (i) => {
+    if (!anim) return null;
+    if (anim.to > anim.from && i >= anim.from && i < anim.to) return { type: "rise", delay: (i - anim.from) * 110 };
+    if (anim.to < anim.from && i >= anim.to && i < anim.from) return { type: "drain", delay: (anim.from - 1 - i) * 70 };
+    return null;
+  };
+  return `<section class="water-card" aria-labelledby="water-title"><div class="water-heading"><div><h2 id="water-title">Wasser <small>· 250 ml je Glas</small></h2><p>Tippe auf ein Glas zum Füllen oder Zurücknehmen.</p></div><strong>${fmt(count * 250)} <small>ml</small></strong></div><div class="water-glasses" aria-label="Getrunkene Gläser">${Array.from({ length: slots }, (_, i) => `<button type="button" class="water-glass ${i < count ? "filled" : ""}${animFor(i) ? " " + animFor(i).type + "-btn" : ""}" style="--delay:${animFor(i)?.delay ?? 0}ms" data-action="water-set" data-count="${i + 1}" aria-label="${i + 1} ${i === 0 ? "Glas" : "Gläser"} · ${(i + 1) * 250} ml${i < count ? " · gefüllt" : ""}" aria-pressed="${i < count}">${glassSvg(i, animFor(i))}<span class="water-number">${i + 1}</span></button>`).join("")}${btn(icon("plus", 16), "water-add", 'aria-label="Ein Glas Wasser hinzufügen, 250 ml"', "water-add-button")}</div></section>`;
 }function todayView() {
   const entries = data.entries.filter((e) => e.date === date),
     n = sum(entries),
@@ -664,6 +680,7 @@ document.addEventListener("click", (e) => {
     const current = data.water?.[date] ?? 0;
     const selected = a === "water-add" ? current + 1 : Number(b.dataset.count);
     const count = a === "water-set" && selected === current ? current - 1 : selected;
+    waterAnim = { from: current, to: count };
     if (Number.isInteger(count) && count >= 0 && count <= 100 && change((d) => {
       d.water ??= {};
       if (count) d.water[date] = count;
@@ -671,6 +688,7 @@ document.addEventListener("click", (e) => {
     })) {
       (a === "water-add" ? app.querySelector('[data-action="water-add"]') : app.querySelector(`[data-action="water-set"][data-count="${selected}"]`))?.focus();
     }
+    waterAnim = null;
   } else if (a === "open-day") {
     date = b.dataset.date;
     page = "today";
