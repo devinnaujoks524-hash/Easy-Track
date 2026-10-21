@@ -414,6 +414,7 @@ main {
 }
 .calorie-card,
 .macro-card,
+.water-card,
 .panel,
 .meal-card,
 .recipe-card {
@@ -532,6 +533,99 @@ main {
 }
 .macro-card {
   padding: 23px 26px;
+}
+.water-card {
+  padding: 22px 26px;
+  margin-bottom: 34px;
+  --water: #3488ad;
+  --water-soft: #dceff6;
+}
+.water-heading,
+.water-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+}
+.water-heading h2 {
+  margin: 5px 0 0;
+}
+.water-heading p,
+.water-actions > span {
+  margin: 0;
+  color: var(--muted);
+  font-size: 12px;
+}
+.water-heading > strong {
+  font: 750 30px Manrope, sans-serif;
+  color: var(--water);
+  white-space: nowrap;
+}
+.water-heading > strong small {
+  font: 500 13px "DM Sans", sans-serif;
+}
+.water-glasses {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 20px 0;
+}
+.water-glass {
+  display: grid;
+  justify-items: center;
+  align-content: center;
+  gap: 3px;
+  width: 54px;
+  height: 67px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface2);
+  color: var(--muted);
+}
+.water-glass:hover {
+  border-color: var(--water);
+}
+.water-shape {
+  position: relative;
+  display: block;
+  width: 26px;
+  height: 34px;
+  overflow: hidden;
+  border: 2px solid var(--water);
+  border-top: 0;
+  border-radius: 2px 2px 8px 8px;
+  transform: perspective(50px) rotateX(-7deg);
+}
+.water-fill {
+  position: absolute;
+  inset: auto 0 0;
+  height: 0;
+  background: var(--water);
+  transition: height 180ms ease;
+}
+.water-glass.filled {
+  background: var(--water-soft);
+  color: #175b7a;
+  border-color: #aad4e6;
+}
+.water-glass.filled .water-fill {
+  height: 75%;
+}
+.water-number {
+  font-size: 10px;
+  font-weight: 700;
+}
+.water-actions .button {
+  flex: none;
+  min-height: 42px;
+}
+:root[data-theme="dark"] .water-card {
+  --water: #8bc8e6;
+  --water-soft: #254a5b;
+}
+:root[data-theme="dark"] .water-glass.filled {
+  color: #e1f5ff;
+  border-color: #4b8cac;
 }
 .macro-row {
   margin-top: 20px;
@@ -1449,6 +1543,16 @@ textarea {
   }
 }
 @media (max-width: 700px) {
+  .water-card {
+    padding: 20px;
+  }
+  .water-actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+  .water-actions .button {
+    width: 100%;
+  }
   .meal-section-heading {
     align-items: stretch;
     flex-direction: column;
@@ -1799,3 +1903,4 @@ textarea {
     scroll-behavior: auto !important;
   }
 }
+
