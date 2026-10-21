@@ -171,6 +171,11 @@ function pageHead(eyebrow, title, desc, action = "") {
 function dateControls() {
   return `<div class="date-controls">${btn(icon("left"), "day", 'data-delta="-1" aria-label="Vorheriger Tag"', "icon-button")}<label class="date-picker"><span>${dateText(date)}</span><input type="date" aria-label="Tag auswählen" min="1900-01-01" max="2200-12-31" id="selected-date" value="${date}"></label>${btn(icon("right"), "day", 'data-delta="1" aria-label="Nächster Tag"', "icon-button")}${btn("Heute", "today", "", "button small secondary")}</div>`;
 }
+function waterView() {
+  const count = data.water?.[date] ?? 0;
+  const slots = Math.max(8, count);
+  return `<section class="water-card" aria-labelledby="water-title"><div class="water-heading"><div><span class="card-label">WASSER</span><h2 id="water-title">Dein Trinküberblick</h2><p>Ein Glas entspricht 250 ml.</p></div><strong>${fmt(count * 250)} <small>ml</small></strong></div><div class="water-glasses" aria-label="Getrunkene Gläser">${Array.from({ length: slots }, (_, i) => `<button type="button" class="water-glass ${i < count ? "filled" : ""}" data-action="water-set" data-count="${i + 1}" aria-label="${i + 1} ${i === 0 ? "Glas" : "Gläser"} · ${(i + 1) * 250} ml${i < count ? " · gefüllt" : ""}" aria-pressed="${i < count}"><span class="water-shape"><span class="water-fill"></span></span><span class="water-number">${i + 1}</span></button>`).join("")}</div><div class="water-actions"><span>${count} ${count === 1 ? "Glas" : "Gläser"} getrunken · Tippe auf ein Glas, um den Stand zu ändern.</span>${btn(icon("plus", 16) + " 250 ml", "water-add", "", "button small secondary")}</div></section>`;
+}
 function todayView() {
   const entries = data.entries.filter((e) => e.date === date),
     n = sum(entries),
@@ -189,7 +194,7 @@ function todayView() {
     )
     .join(
       "",
-    )}<p class="micro">${goal && ["protein", "carbs", "fat"].some((k) => goal[k] != null) ? "Deine individuell eingestellten Makroziele." : "Makroziele sind optional – du kannst sie in den Einstellungen ergänzen."}</p></div></section><div class="meal-section-heading"><div class="section-title"><h2>Deine Mahlzeiten</h2><span>${entries.length} ${entries.length === 1 ? "Eintrag" : "Einträge"}</span></div>${btn(icon("plus") + " Mahlzeit hinzufügen", "choose-meal", "", "button primary")}</div><div class="meal-grid">${MEALS.map(
+    )}<p class="micro">${goal && ["protein", "carbs", "fat"].some((k) => goal[k] != null) ? "Deine individuell eingestellten Makroziele." : "Makroziele sind optional – du kannst sie in den Einstellungen ergänzen."}</p></div></section>${waterView()}<div class="meal-section-heading"><div class="section-title"><h2>Deine Mahlzeiten</h2><span>${entries.length} ${entries.length === 1 ? "Eintrag" : "Einträge"}</span></div>${btn(icon("plus") + " Mahlzeit hinzufügen", "choose-meal", "", "button primary")}</div><div class="meal-grid">${MEALS.map(
     (meal, i) =>
       mealCard(
         meal,
@@ -656,6 +661,17 @@ document.addEventListener("click", (e) => {
   } else if (a === "today") {
     date = today();
     render();
+  } else if (a === "water-set" || a === "water-add") {
+    const current = data.water?.[date] ?? 0;
+    const selected = a === "water-add" ? current + 1 : Number(b.dataset.count);
+    const count = a === "water-set" && selected === current ? current - 1 : selected;
+    if (Number.isInteger(count) && count >= 0 && count <= 100 && change((d) => {
+      d.water ??= {};
+      if (count) d.water[date] = count;
+      else delete d.water[date];
+    })) {
+      (a === "water-add" ? app.querySelector('[data-action="water-add"]') : app.querySelector(`[data-action="water-set"][data-count="${selected}"]`))?.focus();
+    }
   } else if (a === "open-day") {
     date = b.dataset.date;
     page = "today";
@@ -910,3 +926,4 @@ window.addEventListener("storage", (e) => {
   }
 });
 render();
+
