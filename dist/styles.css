@@ -2070,3 +2070,180 @@ textarea {
   }
 }
 
+
+/* Kleine Animationen */
+@property --progress {
+  syntax: "<percentage>";
+  inherits: false;
+  initial-value: 0%;
+}
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+}
+@keyframes pop-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.96);
+  }
+}
+@keyframes ring-fill {
+  from {
+    --progress: 0%;
+  }
+}
+@keyframes grow-x {
+  from {
+    transform: scaleX(0);
+  }
+}
+@keyframes grow-y {
+  from {
+    transform: scaleY(0);
+  }
+}
+@keyframes dialog-in {
+  from {
+    opacity: 0;
+    transform: translateY(16px) scale(0.97);
+  }
+}
+@keyframes fade {
+  from {
+    opacity: 0;
+  }
+}
+.entering main > * {
+  animation: fade-up 0.45s cubic-bezier(0.2, 0.7, 0.2, 1) backwards;
+  animation-delay: 0.36s;
+}
+.entering main > :nth-child(1) {
+  animation-delay: 0ms;
+}
+.entering main > :nth-child(2) {
+  animation-delay: 45ms;
+}
+.entering main > :nth-child(3) {
+  animation-delay: 90ms;
+}
+.entering main > :nth-child(4) {
+  animation-delay: 135ms;
+}
+.entering main > :nth-child(5) {
+  animation-delay: 180ms;
+}
+.entering main > :nth-child(6) {
+  animation-delay: 225ms;
+}
+.entering main > :nth-child(7) {
+  animation-delay: 270ms;
+}
+.entering main > :nth-child(8) {
+  animation-delay: 315ms;
+}
+.entering .meal-card,
+.entering .recipe-card,
+.entering .history-day,
+.entering .chart-day {
+  animation: pop-in 0.45s cubic-bezier(0.2, 0.7, 0.2, 1) backwards;
+}
+.entering .meal-card:nth-child(2),
+.entering .recipe-card:nth-child(2),
+.entering .history-day:nth-child(2),
+.entering .chart-day:nth-child(2) {
+  animation-delay: 70ms;
+}
+.entering .meal-card:nth-child(3),
+.entering .recipe-card:nth-child(3),
+.entering .history-day:nth-child(3),
+.entering .chart-day:nth-child(3) {
+  animation-delay: 140ms;
+}
+.entering .meal-card:nth-child(4),
+.entering .recipe-card:nth-child(4),
+.entering .history-day:nth-child(4),
+.entering .chart-day:nth-child(4) {
+  animation-delay: 210ms;
+}
+.entering .recipe-card:nth-child(n + 5),
+.entering .history-day:nth-child(n + 5),
+.entering .chart-day:nth-child(n + 5) {
+  animation-delay: 280ms;
+}
+.entering .ring {
+  animation: ring-fill 1s cubic-bezier(0.3, 0.7, 0.2, 1) 0.2s backwards;
+}
+.entering .track > span {
+  transform-origin: left;
+  animation: grow-x 0.9s cubic-bezier(0.3, 0.7, 0.2, 1) 0.3s backwards;
+}
+.entering .bar {
+  transform-origin: bottom;
+  animation: grow-y 0.8s cubic-bezier(0.3, 0.7, 0.2, 1) 0.25s backwards;
+}
+dialog[open] {
+  animation: dialog-in 0.28s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+dialog[open]::backdrop {
+  animation: fade 0.25s ease-out;
+}
+.brand-symbol {
+  transition: transform 0.35s cubic-bezier(0.3, 1.6, 0.5, 1);
+}
+.brand:hover .brand-symbol {
+  transform: rotate(5deg) scale(1.08);
+}
+.nav-item svg,
+.meal-symbol,
+.plus svg,
+.goal-edit svg {
+  transition: transform 0.25s cubic-bezier(0.3, 1.6, 0.5, 1);
+}
+.nav-item:hover svg {
+  transform: translateY(-2px) scale(1.1);
+}
+.meal-card:hover .meal-symbol {
+  transform: rotate(-6deg) scale(1.08);
+}
+.plus:hover svg,
+.goal-edit:hover svg {
+  transform: rotate(90deg);
+}
+.icon-button,
+.food-row,
+.entry,
+.filter,
+.history-day,
+.meal-choice,
+.add-food {
+  transition:
+    background-color 0.2s,
+    border-color 0.2s,
+    color 0.2s,
+    transform 0.2s,
+    box-shadow 0.2s;
+}
+.button:hover:not(:disabled),
+.history-day:hover,
+.meal-choice:hover {
+  transform: translateY(-2px);
+}
+.recipe-card:hover {
+  transform: translateY(-4px);
+}
+.food-row:hover,
+.entry:hover {
+  background: color-mix(in srgb, var(--green-soft) 45%, transparent);
+}
+.filter:hover:not(.active) {
+  background: var(--surface2);
+}
+.bar,
+.track > span {
+  transition: opacity 0.2s;
+}
+.chart-day:hover .bar {
+  opacity: 1;
+}

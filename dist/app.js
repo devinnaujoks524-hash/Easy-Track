@@ -154,6 +154,7 @@ function preview(n) {
     )
     .join("")}</div>`;
 }
+let lastViewKey;
 function render() {
   document.documentElement.dataset.theme = data.theme;
   const nav = [
@@ -164,6 +165,9 @@ function render() {
     ["settings", "settings", "Einstellungen"],
   ];
   app.innerHTML = `<aside class="sidebar"><a href="#" class="brand" data-action="nav" data-page="today"><span class="brand-symbol">${icon("leaf", 26)}</span><span>easy<span class="brand-light">track</span><small>DEIN ERNÄHRUNGSTAGEBUCH</small></span></a><div class="nav-label">DEIN ALLTAG, IM BLICK</div><nav aria-label="Hauptnavigation">${nav.map(([id, ic, l]) => `<button type="button" data-action="nav" data-page="${id}" class="nav-item ${page === id ? "active" : ""}" ${page === id ? 'aria-current="page"' : ""}>${icon(ic)}<span>${l}</span></button>`).join("")}</nav><div class="sidebar-note">${icon("lock")}<strong>Deine Daten bleiben bei dir.</strong><p>Lokal gespeichert.<br>Ohne Konto. Ganz entspannt.</p></div><div class="sidebar-footer">Easy Track <span>Version 1.0</span></div></aside><main id="main"><div class="topline"><span>Ein bisschen Überblick. Mehr Alltag.</span><span class="local-badge">${icon("lock", 14)} Nur auf diesem Gerät</span></div>${loadError ? `<div class="error-banner" role="alert">${loadError}${btn("Originaldaten sichern", "raw-export")}</div>` : ""}${{ today: todayView, history: historyView, foods: foodsView, recipes: recipesView, settings: settingsView }[page]()}</main>`;
+  const viewKey = page + (page === "today" ? "|" + date : "");
+  app.classList.toggle("entering", viewKey !== lastViewKey);
+  lastViewKey = viewKey;
 }
 function pageHead(eyebrow, title, desc, action = "") {
   return `<header class="page-head"><div><div class="eyebrow">${eyebrow}</div><h1 id="page-title" tabindex="-1">${title}</h1><p>${desc}</p></div>${action}</header>`;
