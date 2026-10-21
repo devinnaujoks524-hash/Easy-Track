@@ -45,6 +45,34 @@ function setup(saved) {
     data = () => JSON.parse(w.localStorage.getItem("easy-track.v1"));
   return { dom, w, q, click, fill, submit, data };
 }
+test("Ziele direkt an Kalorien- und Makrokarten bearbeiten", () => {
+  const t = setup();
+  try {
+    const day = model.today();
+    t.click('[data-action="edit-goal"][data-focus="kcal"]');
+    assert.match(t.q("#dialog-title").textContent, /Kalorienziel/);
+    t.fill("kcal", "2000", "#goal-dialog-form");
+    t.submit("#goal-dialog-form");
+    assert.equal(t.data().goals.length, 1);
+    assert.equal(t.data().goals[0].kcal, 2000);
+    assert.equal(t.data().goals[0].date, day);
+    assert.match(t.q(".calorie-card").textContent, /2\.000/);
+    t.click('[data-action="edit-goal"][data-focus="protein"]');
+    assert.equal(t.q('#goal-dialog-form [name="kcal"]').value, "2000");
+    t.fill("protein", "120,5", "#goal-dialog-form");
+    t.fill("carbs", "250", "#goal-dialog-form");
+    t.fill("fat", "70", "#goal-dialog-form");
+    t.submit("#goal-dialog-form");
+    assert.equal(t.data().goals.length, 1);
+    assert.equal(t.data().goals[0].protein, 120.5);
+    assert.equal(t.data().goals[0].carbs, 250);
+    assert.equal(t.data().goals[0].fat, 70);
+    assert.match(t.q(".macro-card").textContent, /120,5 g/);
+    assert.equal(model.goalAt(t.data().goals, model.shiftDate(day, -1)), null);
+  } finally {
+    t.dom.window.close();
+  }
+});
 test("Lebensmittel → Eintrag → Menge ändern → Löschen/Rückgängig → Kopieren → Reload", () => {
   const t = setup();
   try {
