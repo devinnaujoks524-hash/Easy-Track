@@ -2404,3 +2404,146 @@ nav {
     box-shadow: none;
   }
 }
+
+/* Verlauf: Tag auswählen und Details sehen */
+.chart-day {
+  padding-top: 10px;
+  padding-bottom: 8px;
+  transition: background-color 0.2s;
+}
+.chart-day:hover {
+  background: var(--surface2);
+}
+.chart-day.selected {
+  background: var(--green-soft);
+  box-shadow: inset 0 0 0 1.5px color-mix(in srgb, var(--green) 45%, transparent);
+}
+.chart-day.selected .bar {
+  opacity: 1;
+}
+.day-detail {
+  margin-top: 20px;
+}
+.day-badge {
+  font: 700 11px "DM Sans", sans-serif;
+  letter-spacing: 0;
+  color: var(--green);
+  background: var(--green-soft);
+  padding: 3px 10px;
+  border-radius: 999px;
+  vertical-align: middle;
+  margin-left: 6px;
+}
+.day-empty {
+  margin: 8px 0 0;
+}
+.day-summary {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 28px;
+  align-items: start;
+}
+.day-kcal > strong {
+  display: block;
+  font: 750 38px Manrope, sans-serif;
+  letter-spacing: -1.5px;
+  line-height: 1.15;
+}
+.day-kcal > strong small {
+  font: 500 14px "DM Sans", sans-serif;
+  letter-spacing: 0;
+  color: var(--muted);
+}
+.day-kcal > span {
+  font-size: 13px;
+  color: var(--muted);
+}
+.day-kcal > span.over {
+  color: var(--danger);
+  font-weight: 650;
+}
+.day-kcal .track {
+  height: 9px;
+  margin: 12px 0 4px;
+}
+.track > span.g {
+  background: linear-gradient(90deg, var(--green-2), var(--green));
+}
+.track > span.g.over {
+  background: var(--danger);
+}
+.day-water {
+  margin: 14px 0 0;
+  font-size: 13px;
+  color: var(--water-text, #2a8fd0);
+  font-weight: 600;
+}
+.day-macros .macro-row:first-child {
+  margin-top: 0;
+}
+.day-meals {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-top: 26px;
+}
+.day-meal {
+  background: var(--surface2);
+  border-radius: 16px;
+  padding: 14px 16px 6px;
+}
+.day-meal-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 4px;
+}
+.day-meal-head .meal-symbol {
+  width: 34px;
+  height: 34px;
+  border-radius: 11px;
+}
+.day-meal-head h3 {
+  margin: 0;
+  font-size: 14px;
+  flex: 1;
+}
+.day-meal-head strong,
+.day-entry strong {
+  font-size: 13px;
+  white-space: nowrap;
+}
+.day-meal-head strong small,
+.day-entry strong small {
+  font-size: 10px;
+  font-weight: 400;
+  color: var(--muted);
+}
+.day-entry {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: baseline;
+  padding: 9px 0;
+  border-top: 1px solid var(--border);
+  font-size: 13px;
+}
+.day-entry > span {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.day-entry > span small {
+  display: block;
+  font-size: 11px;
+  color: var(--muted);
+}
+@media (max-width: 700px) {
+  .day-summary,
+  .day-meals {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  .day-kcal > strong {
+    font-size: 32px;
+  }
+}

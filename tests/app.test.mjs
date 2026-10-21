@@ -364,3 +364,21 @@ test("Speicherfehler melden und defekte lokale Daten nicht überschreiben", () =
   }
 });
 
+
+test("Verlauf: Tag auswählen zeigt nur dessen Details", () => {
+  const t = setup();
+  try {
+    const day = model.today();
+    t.click('[data-page="history"]');
+    assert.match(t.q("#day-title").textContent, /\S/);
+    assert.match(t.q(".day-detail").textContent, /noch nichts eingetragen/);
+    const other = model.shiftDate(day, -1);
+    if (t.dom.window.document.querySelector(`[data-action="select-day"][data-date="${other}"]`)) {
+      t.click(`[data-action="select-day"][data-date="${other}"]`);
+      assert.equal(t.q(".chart-day.selected").dataset.date, other);
+      assert.ok(t.q("[data-action='open-day']"));
+    }
+  } finally {
+    t.dom.window.close();
+  }
+});

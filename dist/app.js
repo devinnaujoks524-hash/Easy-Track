@@ -354,21 +354,44 @@ function mealCard(meal, i, entries) {
   const n = sum(entries);
   return `<section class="meal-card"><div class="meal-head"><span class="meal-symbol m${i}">${icon(["sun", "food", "moon", "leaf"][i], 22)}</span><h3>${meal}<small>${entries.length ? entries.length + " " + (entries.length === 1 ? "Eintrag" : "Einträge") : ["Ein guter Start in den Tag", "Zeit für eine kleine Pause", "Den Tag entspannt ausklingen lassen", "Für den Hunger zwischendurch"][i]}</small></h3><strong>${fmt(n.kcal)} <small>kcal</small></strong>${entries.length ? btn(icon("copy"), "copy-meal", `data-meal="${meal}" aria-label="${meal} kopieren"`, "icon-button") : ""}</div>${entries.length ? `<div class="entries">${entries.map((e) => `<div class="entry"><button type="button" class="entry-main" data-action="edit-entry" data-id="${e.id}"><strong>${esc(e.name)}</strong><span>${fmt(e.amount, 2)} ${e.unit === "portion" ? "Portionen" : e.unit}${e.unit === "portion" && e.food.source !== "recipe" ? " · je " + fmt(e.food.portionSize, 2) + " " + e.food.basis : ""}</span></button><strong>${fmt(e.nutrients.kcal)} <small>kcal</small></strong>${btn(icon("edit", 16), "edit-entry", `data-id="${e.id}" aria-label="${esc(e.name)} bearbeiten"`, "icon-button")}</div>`).join("")}</div><details><summary>Makronährstoffe anzeigen</summary><div class="meal-macros">${macros(n)}</div></details>` : `<div class="meal-empty">Noch nichts eingetragen.</div>`}${btn(icon("plus", 18) + " Lebensmittel hinzufügen", "add", `data-meal="${meal}"`, "add-food")}</section>`;
 }
+function dayDetail() {
+  const entries = data.entries.filter((e) => e.date === date),
+    n = sum(entries),
+    goal = goalAt(data.goals, date),
+    hasGoal = goal?.kcal != null,
+    diff = hasGoal ? goal.kcal - n.kcal : null,
+    glasses = data.water?.[date] ?? 0,
+    head = `<div class="section-title"><h2 id="day-title">${dateText(date)}${date === today() ? ' <span class="day-badge">Heute</span>' : ""}</h2>${btn("Zum Tag →", "open-day", `data-date="${date}"`, "button small secondary")}</div>`;
+  if (!entries.length && !glasses)
+    return `<section class="panel day-detail" aria-labelledby="day-title">${head}<p class="muted day-empty">An diesem Tag ist noch nichts eingetragen.</p></section>`;
+  const status = hasGoal
+    ? diff >= 0
+      ? `${fmt(diff)} kcal übrig · Ziel ${fmt(goal.kcal)} kcal`
+      : `${fmt(-diff)} kcal zu viel · Ziel ${fmt(goal.kcal)} kcal`
+    : "Kein Kalorienziel festgelegt";
+  const macroRows = [
+    ["protein", "Eiweiß", "p"],
+    ["carbs", "Kohlenhydrate", "c"],
+    ["fat", "Fett", "f"],
+  ]
+    .map(
+      ([k, l, c]) =>
+        `<div class="macro-row"><div><span class="dot ${c}"></span>${l}<strong>${fmt(n[k], 1)} <small>g${goal?.[k] != null ? " / " + fmt(goal[k], 1) + " g" : ""}</small></strong></div><div class="track"><span class="${c}" style="width:${goal?.[k] > 0 ? Math.min(100, (n[k] / goal[k]) * 100) : 0}%"></span></div></div>`,
+    )
+    .join("");
+  const meals = MEALS.map((m, i) => ({ m, i, list: entries.filter((e) => e.meal === m) }))
+    .filter((x) => x.list.length)
+    .map(
+      ({ m, i, list }) =>
+        `<div class="day-meal"><div class="day-meal-head"><span class="meal-symbol m${i}">${icon(["sun", "food", "moon", "leaf"][i], 20)}</span><h3>${m}</h3><strong>${fmt(sum(list).kcal)} <small>kcal</small></strong></div>${list.map((e) => `<div class="day-entry"><span>${esc(e.name)}<small>${fmt(e.amount, 2)} ${e.unit === "portion" ? "Portionen" : e.unit}</small></span><strong>${fmt(e.nutrients.kcal)} <small>kcal</small></strong></div>`).join("")}</div>`,
+    )
+    .join("");
+  return `<section class="panel day-detail" aria-labelledby="day-title">${head}<div class="day-summary"><div class="day-kcal"><strong>${fmt(n.kcal)} <small>kcal</small></strong><span class="${hasGoal && diff < 0 ? "over" : ""}">${status}</span>${hasGoal ? `<div class="track"><span class="g ${diff < 0 ? "over" : ""}" style="width:${Math.min(100, (n.kcal / goal.kcal) * 100)}%"></span></div>` : ""}<p class="day-water">Wasser: ${glasses ? glasses + (glasses === 1 ? " Glas" : " Gläser") + " · " + fmt(glasses * 250) + " ml" : "nichts eingetragen"}</p></div><div class="day-macros">${macroRows}</div></div>${meals ? `<div class="day-meals">${meals}</div>` : ""}</section>`;
+}
 function historyView() {
   const w = weekStats(data.entries, date),
     max = Math.max(...w.days.map((d) => d.kcal), 1);
-  return `${pageHead("DEINE ENTWICKLUNG", "Ein Blick zurück.", "Deine Woche – ohne Bewertung, mit Überblick.")}${dateControls()}<section class="panel"><div class="section-title"><h2>${dateText(w.days[0].date, { day: "numeric", month: "short" })} – ${dateText(w.days[6].date, { day: "numeric", month: "short", year: "numeric" })}</h2><div>${btn("← Woche", "week", 'data-delta="-7"', "button small secondary")}${btn("Woche →", "week", 'data-delta="7"', "button small secondary")}</div></div><div class="week-stats"><div><strong>${fmt(w.total)} <small>kcal</small></strong><span>Gesamte Woche</span></div><div><strong>${fmt(w.average)} <small>kcal</small></strong><span>Ø pro erfasstem Tag</span></div><div><strong>${w.count} <small>/ 7</small></strong><span>Tage mit Einträgen</span></div></div><div class="chart">${w.days.map((d) => `<button type="button" class="chart-day ${d.date === today() ? "current" : ""}" data-action="open-day" data-date="${d.date}" aria-label="${dateText(d.date)}: ${d.count ? fmt(d.kcal) + " kcal" : "keine Einträge"}"><span class="bar-value">${d.count ? fmt(d.kcal) : "—"}</span><span class="bar-zone"><span class="bar ${d.count ? "" : "empty"}" style="height:${d.count ? Math.max(2, (d.kcal / max) * 100) : 3}%"></span></span><strong>${dateText(d.date, { weekday: "short" })}</strong><small>${dateText(d.date, { day: "numeric", month: "numeric" })}</small></button>`).join("")}</div><p class="micro">Der Durchschnitt berücksichtigt nur Tage mit mindestens einem Eintrag. Einträge bedeuten nicht zwingend, dass ein Tag vollständig erfasst ist. „—“ bedeutet: keine Einträge.</p></section><div class="section-title"><h2>Die Tage im Detail</h2></div><div class="history-list">${[
-    ...w.days,
-  ]
-    .reverse()
-    .map((d) => {
-      const g = goalAt(data.goals, d.date);
-      const meals = MEALS.filter((m) =>
-        data.entries.some((e) => e.date === d.date && e.meal === m),
-      );
-      return `<button type="button" class="history-day" data-action="open-day" data-date="${d.date}"><div><strong>${dateText(d.date)}</strong><span>${d.count ? meals.join(" · ") : "Keine Lebensmittel eingetragen"}</span></div><div><strong>${d.count ? fmt(d.kcal) + " kcal" : "—"}</strong><span>${g?.kcal != null ? "Ziel: " + fmt(g.kcal) + " kcal" : "Kein Kalorienziel festgelegt"}</span>${d.count ? macros(d) : ""}</div>${icon("right")}</button>`;
-    })
-    .join("")}</div>`;
+  return `${pageHead("DEINE ENTWICKLUNG", "Ein Blick zurück.", "Deine Woche – ohne Bewertung, mit Überblick.")}${dateControls()}<section class="panel"><div class="section-title"><h2>${dateText(w.days[0].date, { day: "numeric", month: "short" })} – ${dateText(w.days[6].date, { day: "numeric", month: "short", year: "numeric" })}</h2><div>${btn("← Woche", "week", 'data-delta="-7"', "button small secondary")}${btn("Woche →", "week", 'data-delta="7"', "button small secondary")}</div></div><div class="week-stats"><div><strong>${fmt(w.total)} <small>kcal</small></strong><span>Gesamte Woche</span></div><div><strong>${fmt(w.average)} <small>kcal</small></strong><span>Ø pro erfasstem Tag</span></div><div><strong>${w.count} <small>/ 7</small></strong><span>Tage mit Einträgen</span></div></div><div class="chart">${w.days.map((d) => `<button type="button" class="chart-day ${d.date === today() ? "current" : ""} ${d.date === date ? "selected" : ""}" data-action="select-day" data-date="${d.date}" aria-pressed="${d.date === date}" aria-label="${dateText(d.date)}: ${d.count ? fmt(d.kcal) + " kcal" : "keine Einträge"}"><span class="bar-value">${d.count ? fmt(d.kcal) : "—"}</span><span class="bar-zone"><span class="bar ${d.count ? "" : "empty"}" style="height:${d.count ? Math.max(2, (d.kcal / max) * 100) : 3}%"></span></span><strong>${dateText(d.date, { weekday: "short" })}</strong><small>${dateText(d.date, { day: "numeric", month: "numeric" })}</small></button>`).join("")}</div><p class="micro">Der Durchschnitt berücksichtigt nur Tage mit mindestens einem Eintrag. Einträge bedeuten nicht zwingend, dass ein Tag vollständig erfasst ist. „—“ bedeutet: keine Einträge.</p></section>${dayDetail()}`;
 }
 function filterFoods(query, filter) {
   let list = allFoods();
@@ -831,6 +854,10 @@ document.addEventListener("click", (e) => {
       (a === "water-add" ? app.querySelector('[data-action="water-add"]') : app.querySelector(`[data-action="water-set"][data-count="${selected}"]`))?.focus();
     }
     waterAnim = null;
+  } else if (a === "select-day") {
+    date = b.dataset.date;
+    render();
+    app.querySelector(`[data-action="select-day"][data-date="${date}"]`)?.focus();
   } else if (a === "open-day") {
     date = b.dataset.date;
     page = "today";
