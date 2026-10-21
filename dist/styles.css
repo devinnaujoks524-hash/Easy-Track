@@ -625,10 +625,10 @@ main {
 }
 .water-glasses {
   display: flex;
-  gap: 8px;
-  margin-top: 12px;
+  gap: 3px;
+  margin-top: 10px;
   overflow-x: auto;
-  padding: 4px 2px 8px;
+  padding: 3px 1px 6px;
   scrollbar-width: thin;
 }
 .water-glass,
@@ -636,11 +636,11 @@ main {
   display: grid;
   justify-items: center;
   align-content: center;
-  flex: 0 0 52px;
-  gap: 2px;
-  height: 90px;
+  flex: 0 0 36px;
+  gap: 1px;
+  height: 66px;
   border: 1px solid transparent;
-  border-radius: 16px;
+  border-radius: 12px;
   background: none;
   color: var(--muted);
 }
@@ -654,8 +654,8 @@ main {
   color: var(--water);
 }
 .glass-svg {
-  width: 40px;
-  height: 60px;
+  width: 27px;
+  height: 40px;
   overflow: visible;
 }
 .glass-body {
@@ -695,7 +695,7 @@ main {
   transform: translateY(-2px);
 }
 .water-number {
-  font-size: 10px;
+  font-size: 9px;
   font-weight: 700;
 }
 .water-glass.filled {
