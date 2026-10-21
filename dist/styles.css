@@ -2377,3 +2377,30 @@ dialog.morph[open]::backdrop {
   animation: none;
   backdrop-filter: none;
 }
+
+/* Gleitende Pille im Menü */
+nav {
+  position: relative;
+}
+.nav-item {
+  position: relative;
+  z-index: 1;
+}
+.nav-item.active {
+  background: none;
+  box-shadow: none;
+}
+.nav-pill {
+  position: absolute;
+  z-index: 0;
+  border-radius: 14px;
+  background: var(--green-soft);
+  box-shadow: inset 3px 0 0 var(--green);
+  pointer-events: none;
+}
+@media (max-width: 700px) {
+  .nav-pill {
+    border-radius: 9px;
+    box-shadow: none;
+  }
+}

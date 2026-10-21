@@ -247,7 +247,40 @@ function preview(n) {
     )
     .join("")}</div>`;
 }
-let lastViewKey;
+let lastViewKey,
+  lastPill = null,
+  lastPillPage = null;
+function movePill() {
+  const nav = app.querySelector("nav"),
+    act = nav?.querySelector(".nav-item.active");
+  if (!act) return;
+  const box = {
+    x: act.offsetLeft,
+    y: act.offsetTop,
+    w: act.offsetWidth,
+    h: act.offsetHeight,
+  };
+  const pill = document.createElement("span");
+  pill.className = "nav-pill";
+  pill.setAttribute("aria-hidden", "true");
+  pill.style.cssText = `left:${box.x}px;top:${box.y}px;width:${box.w}px;height:${box.h}px`;
+  nav.prepend(pill);
+  if (lastPill && lastPillPage !== page && canMorph()) {
+    pill.animate(
+      [
+        {
+          transform: `translate(${lastPill.x - box.x}px, ${lastPill.y - box.y}px)`,
+          width: `${lastPill.w}px`,
+          height: `${lastPill.h}px`,
+        },
+        { transform: "none", width: `${box.w}px`, height: `${box.h}px` },
+      ],
+      { duration: 520, easing: "cubic-bezier(0.3, 1.25, 0.4, 1)" },
+    );
+  }
+  lastPill = box;
+  lastPillPage = page;
+}
 function render() {
   document.documentElement.dataset.theme = data.theme;
   const nav = [
@@ -257,6 +290,7 @@ function render() {
     ["settings", "settings", "Einstellungen"],
   ];
   app.innerHTML = `<aside class="sidebar"><a href="#" class="brand" data-action="nav" data-page="today"><span class="brand-symbol">${icon("leaf", 26)}</span><span>easy<span class="brand-light">track</span><small>DEIN ERNÄHRUNGSTAGEBUCH</small></span></a><div class="nav-label">DEIN ALLTAG, IM BLICK</div><nav aria-label="Hauptnavigation">${nav.map(([id, ic, l]) => `<button type="button" data-action="nav" data-page="${id}" class="nav-item ${page === id ? "active" : ""}" ${page === id ? 'aria-current="page"' : ""}>${icon(ic)}<span>${l}</span></button>`).join("")}</nav><div class="sidebar-note">${icon("lock")}<strong>Deine Daten bleiben bei dir.</strong><p>Lokal gespeichert.<br>Ohne Konto. Ganz entspannt.</p></div><div class="sidebar-footer">Easy Track <span>Version 1.0</span></div></aside><main id="main"><div class="topline"><span>Ein bisschen Überblick. Mehr Alltag.</span><span class="local-badge">${icon("lock", 14)} Nur auf diesem Gerät</span></div>${loadError ? `<div class="error-banner" role="alert">${loadError}${btn("Originaldaten sichern", "raw-export")}</div>` : ""}${{ today: todayView, history: historyView, foods: foodsView, recipes: recipesView, settings: settingsView }[page]()}</main>`;
+  movePill();
   const viewKey = page + (page === "today" ? "|" + date : "");
   app.classList.toggle("entering", viewKey !== lastViewKey);
   lastViewKey = viewKey;
