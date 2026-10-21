@@ -616,14 +616,25 @@ function settingsView() {
 }
 function goalDialog(focus) {
   const g = goalAt(data.goals, date);
+  const kcalMode = focus === "kcal";
+  const fields = kcalMode
+    ? `<div class="goal-kcal"><span class="goal-kcal-icon">${icon("leaf", 26)}</span>${numInput("kcal", "Kalorienziel (kcal)", g?.kcal ?? "", true)}</div>`
+    : `<div class="goal-macros">${[
+        ["protein", "Eiweiß", "p"],
+        ["carbs", "Kohlenhydrate", "c"],
+        ["fat", "Fett", "f"],
+      ]
+        .map(
+          ([k, l, c]) =>
+            `<div class="macro-field ${c}-field"><span class="macro-field-dot ${c}"></span>${numInput(k, `${l} <small>in Gramm</small>`, g?.[k] ?? "", true)}</div>`,
+        )
+        .join("")}</div>`;
   openDialog(
-    focus === "kcal"
-      ? "Kalorienziel bearbeiten"
-      : "Makronährstoffziele bearbeiten",
-    `<form id="goal-dialog-form" novalidate>${dateInput(date, "date", "Gültig ab")}${numInput("kcal", "Kalorienziel (kcal)", g?.kcal ?? "", true)}<h3>Makronährstoffziele <span class="optional">optional</span></h3><div class="form-grid">${numInput("protein", "Eiweiß (g)", g?.protein ?? "", true)}${numInput("carbs", "Kohlenhydrate (g)", g?.carbs ?? "", true)}${numInput("fat", "Fett (g)", g?.fat ?? "", true)}</div><p class="micro">Die Ziele gelten ab dem gewählten Datum. Frühere Tage behalten ihr bisheriges Ziel. Du kannst Makroziele leer lassen.</p><p class="form-error" role="alert"></p><div class="dialog-footer">${btn("Abbrechen", "close", "", "button secondary")}<button class="button primary" type="submit">Ziele speichern</button></div></form>`,
+    kcalMode ? "Kalorienziel bearbeiten" : "Makronährstoffziele bearbeiten",
+    `<form id="goal-dialog-form" data-mode="${kcalMode ? "kcal" : "macros"}" novalidate>${dateInput(date, "date", "Gültig ab")}${fields}<p class="micro">${kcalMode ? "Das Kalorienziel gilt ab dem gewählten Datum. Frühere Tage behalten ihr bisheriges Ziel." : "Die Makroziele gelten ab dem gewählten Datum. Frühere Tage behalten ihr bisheriges Ziel. Du kannst Felder leer lassen."}</p><p class="form-error" role="alert"></p><div class="dialog-footer">${btn("Abbrechen", "close", "", "button secondary")}<button class="button primary" type="submit">Ziele speichern</button></div></form>`,
   );
   requestAnimationFrame(() =>
-    modal.querySelector(`[name="${focus}"]`)?.focus(),
+    modal.querySelector(`[name="${kcalMode ? "kcal" : focus}"]`)?.focus(),
   );
 }
 function exportData(raw = false) {
@@ -903,14 +914,21 @@ document.addEventListener("submit", (e) => {
     )
       closeDialog();
   } else if (form.id === "goal-form" || form.id === "goal-dialog-form") {
-    const kcal = getNumber(form, "kcal", { optional: true, positive: true }),
+    const mode = form.dataset.mode,
+      dt = form.elements.date.value,
+      base = (validDate(dt) && goalAt(data.goals, dt)) || {},
+      kcal =
+        mode === "macros"
+          ? (base.kcal ?? null)
+          : getNumber(form, "kcal", { optional: true, positive: true }),
       vals = Object.fromEntries(
         ["protein", "carbs", "fat"].map((k) => [
           k,
-          getNumber(form, k, { optional: true }),
+          mode === "kcal"
+            ? (base[k] ?? null)
+            : getNumber(form, k, { optional: true }),
         ]),
-      ),
-      dt = form.elements.date.value;
+      );
     if (
       kcal === undefined ||
       Object.values(vals).includes(undefined) ||

@@ -109,7 +109,8 @@ test("Ziele direkt an Kalorien- und Makrokarten bearbeiten", () => {
     assert.equal(t.data().goals[0].date, day);
     assert.match(t.q(".calorie-card").textContent, /2\.000/);
     t.click('[data-action="edit-goal"][data-focus="protein"]');
-    assert.equal(t.q('#goal-dialog-form [name="kcal"]').value, "2000");
+    assert.equal(t.q('#goal-dialog-form [name="kcal"]'), null);
+    assert.match(t.q("#dialog-title").textContent, /Makro/);
     t.fill("protein", "120,5", "#goal-dialog-form");
     t.fill("carbs", "250", "#goal-dialog-form");
     t.fill("fat", "70", "#goal-dialog-form");
@@ -118,6 +119,13 @@ test("Ziele direkt an Kalorien- und Makrokarten bearbeiten", () => {
     assert.equal(t.data().goals[0].protein, 120.5);
     assert.equal(t.data().goals[0].carbs, 250);
     assert.equal(t.data().goals[0].fat, 70);
+    assert.equal(t.data().goals[0].kcal, 2000);
+    t.click('[data-action="edit-goal"][data-focus="kcal"]');
+    assert.equal(t.q('#goal-dialog-form [name="protein"]'), null);
+    t.fill("kcal", "2100", "#goal-dialog-form");
+    t.submit("#goal-dialog-form");
+    assert.equal(t.data().goals[0].kcal, 2100);
+    assert.equal(t.data().goals[0].protein, 120.5);
     assert.match(t.q(".macro-card").textContent, /120,5 g/);
     assert.equal(model.goalAt(t.data().goals, model.shiftDate(day, -1)), null);
   } finally {
