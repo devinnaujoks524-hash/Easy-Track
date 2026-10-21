@@ -34,6 +34,17 @@
 * {
   box-sizing: border-box;
 }
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
 body {
   margin: 0;
   font-family:
@@ -587,6 +598,16 @@ main {
 .section-title > span {
   font-size: 11px;
   color: var(--muted);
+}
+.meal-section-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+.meal-section-heading .section-title {
+  margin: 0;
 }
 .meal-grid {
   display: grid;
@@ -1428,6 +1449,14 @@ textarea {
   }
 }
 @media (max-width: 700px) {
+  .meal-section-heading {
+    align-items: stretch;
+    flex-direction: column;
+  }
+  .meal-section-heading > .button {
+    width: 100%;
+    min-height: 48px;
+  }
   .sidebar {
     inset: auto 0 0;
     width: 100%;
