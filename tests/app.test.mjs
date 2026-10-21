@@ -73,6 +73,26 @@ test("Ziele direkt an Kalorien- und Makrokarten bearbeiten", () => {
     t.dom.window.close();
   }
 });
+test("Makroziele ohne Kalorienziel direkt speichern und später ergänzen", () => {
+  const t = setup();
+  try {
+    t.click('[data-action="edit-goal"][data-focus="protein"]');
+    t.fill("protein", "110,5", "#goal-dialog-form");
+    t.submit("#goal-dialog-form");
+    assert.equal(t.data().goals[0].kcal, null);
+    assert.equal(t.data().goals[0].protein, 110.5);
+    assert.match(t.q(".calorie-card").textContent, /Dein Tagesziel/);
+    assert.match(t.q(".macro-card").textContent, /110,5 g/);
+    assert.doesNotThrow(() => model.validateData(t.data()));
+    t.click('[data-action="edit-goal"][data-focus="kcal"]');
+    t.fill("kcal", "1900", "#goal-dialog-form");
+    t.submit("#goal-dialog-form");
+    assert.equal(t.data().goals[0].kcal, 1900);
+    assert.equal(t.data().goals[0].protein, 110.5);
+  } finally {
+    t.dom.window.close();
+  }
+});
 test("Lebensmittel → Eintrag → Menge ändern → Löschen/Rückgängig → Kopieren → Reload", () => {
   const t = setup();
   try {
