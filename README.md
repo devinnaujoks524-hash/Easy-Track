@@ -30,7 +30,7 @@ Der Ordner `dist/` ist die vollständige statische Website und lässt sich auf e
 - **Einträge:** Menge, Datum und Mahlzeit ändern; löschen und zehn Sekunden lang rückgängig machen; einzelne Einträge oder vollständige Mahlzeiten auf ein frei gewähltes Datum und in einen Mahlzeitenbereich kopieren.
 - **Rezepte:** Namen, Beschreibung, Zutatenmengen und Portionen verwalten; automatisch berechnete Gesamtwerte und Werte pro Portion; bearbeiten, duplizieren, löschen und auch halbe Portionen eintragen.
 - **Verlauf:** Montag–Sonntag-Diagramm mit anklickbaren Tagen, Tagesdetails, Wochenkalorien, Anzahl erfasster Tage und Durchschnitt nur über Tage mit Einträgen.
-- **Ziele:** manuelle Kalorienziele und optionale Makroziele mit Gültigkeitsdatum. Frühere Tage behalten ihr bisheriges Ziel. Es wird kein persönlicher Bedarf errechnet.
+- **Ziele:** manuelle Kalorien- und Makroziele mit Gültigkeitsdatum. Makroziele lassen sich auch ohne Kalorienziel speichern. Frühere Tage behalten ihr bisheriges Ziel. Es wird kein persönlicher Bedarf errechnet.
 - **Einstellungen:** Hell-/Dunkelmodus, deutsche Zahlen und Datumsangaben, JSON-Export, geprüfter Import mit Ersetzungsbestätigung und vollständiges Zurücksetzen mit Bestätigung.
 - **Bedienung:** mobile Navigation unten, Desktop-Seitenleiste, native modale Dialoge mit Escape und Fokusführung, Tastaturfokus, beschriftete Eingaben und Berücksichtigung reduzierter Bewegung.
 
@@ -56,7 +56,7 @@ tests/app.test.mjs    Integrationstests mit Formularen, Events und Local Storage
 
 ## Prüfung
 
-13 automatisierte Tests bestehen. Sie prüfen insbesondere Anlegen und Erfassen, Mengenänderungen und Summen, Löschen/Rückgängig, Mahlzeitenkopien, Rezeptzutaten und Teilportionen, unveränderliche historische Nährwerte, direkte Zielbearbeitung, Zielwechsel, Reload, Export-/Import-Rundlauf, fehlerhafte Importe, ungültige Mengen, Datumsgrenzen und Schutz beschädigter Daten.
+14 automatisierte Tests bestehen. Sie prüfen insbesondere Anlegen und Erfassen, Mengenänderungen und Summen, Löschen/Rückgängig, Mahlzeitenkopien, Rezeptzutaten und Teilportionen, unveränderliche historische Nährwerte, direkte Zielbearbeitung einschließlich alleiniger Makroziele, Zielwechsel, Reload, Export-/Import-Rundlauf, fehlerhafte Importe, ungültige Mengen, Datumsgrenzen und Schutz beschädigter Daten.
 
 Zusätzlich im integrierten Chromium-Browser geprüft: eigenes Lebensmittel mit Dezimalkomma anlegen, 1,5 Portionen erfassen, korrekte Kalorien-/Makroanzeige, Neuladen sowie die responsive Ansicht bei 390 Pixel Breite. Die Integrationstests verwenden jsdom; sie ersetzen keine umfassende Prüfung in Safari/Firefox oder mit einem Screenreader.
 
