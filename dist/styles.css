@@ -535,66 +535,72 @@ main {
   padding: 23px 26px;
 }
 .water-card {
-  padding: 22px 26px;
-  margin-bottom: 34px;
+  padding: 16px 20px 14px;
+  margin-bottom: 26px;
   --water: #3488ad;
   --water-soft: #dceff6;
 }
-.water-heading,
-.water-actions {
+.water-heading {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 18px;
+  gap: 12px;
 }
 .water-heading h2 {
-  margin: 5px 0 0;
-}
-.water-heading p,
-.water-actions > span {
   margin: 0;
+  font-size: 16px;
+}
+.water-heading h2 small {
   color: var(--muted);
-  font-size: 12px;
+  font: 500 11px "DM Sans", sans-serif;
+}
+.water-heading p {
+  margin: 2px 0 0;
+  color: var(--muted);
+  font-size: 11px;
 }
 .water-heading > strong {
-  font: 750 30px Manrope, sans-serif;
+  font: 750 23px Manrope, sans-serif;
   color: var(--water);
   white-space: nowrap;
 }
 .water-heading > strong small {
-  font: 500 13px "DM Sans", sans-serif;
+  font: 500 12px "DM Sans", sans-serif;
 }
 .water-glasses {
   display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin: 20px 0;
+  gap: 6px;
+  margin-top: 12px;
+  overflow-x: auto;
+  padding: 2px 1px 6px;
+  scrollbar-width: thin;
 }
-.water-glass {
+.water-glass,
+.water-add-button {
   display: grid;
   justify-items: center;
   align-content: center;
-  gap: 3px;
-  width: 54px;
-  height: 67px;
+  flex: 0 0 44px;
+  gap: 1px;
+  height: 52px;
   border: 1px solid var(--border);
-  border-radius: 10px;
+  border-radius: 9px;
   background: var(--surface2);
   color: var(--muted);
 }
-.water-glass:hover {
+.water-glass:hover,
+.water-add-button:hover {
   border-color: var(--water);
 }
 .water-shape {
   position: relative;
   display: block;
-  width: 26px;
-  height: 34px;
+  width: 20px;
+  height: 26px;
   overflow: hidden;
   border: 2px solid var(--water);
   border-top: 0;
-  border-radius: 2px 2px 8px 8px;
-  transform: perspective(50px) rotateX(-7deg);
+  border-radius: 2px 2px 6px 6px;
 }
 .water-fill {
   position: absolute;
@@ -612,12 +618,11 @@ main {
   height: 75%;
 }
 .water-number {
-  font-size: 10px;
+  font-size: 9px;
   font-weight: 700;
 }
-.water-actions .button {
-  flex: none;
-  min-height: 42px;
+.water-add-button {
+  color: var(--water);
 }
 :root[data-theme="dark"] .water-card {
   --water: #8bc8e6;
@@ -626,8 +631,7 @@ main {
 :root[data-theme="dark"] .water-glass.filled {
   color: #e1f5ff;
   border-color: #4b8cac;
-}
-.macro-row {
+}.macro-row {
   margin-top: 20px;
 }
 .macro-row > div:first-child {
@@ -1544,14 +1548,7 @@ textarea {
 }
 @media (max-width: 700px) {
   .water-card {
-    padding: 20px;
-  }
-  .water-actions {
-    align-items: stretch;
-    flex-direction: column;
-  }
-  .water-actions .button {
-    width: 100%;
+    padding: 14px 16px 10px;
   }
   .meal-section-heading {
     align-items: stretch;
