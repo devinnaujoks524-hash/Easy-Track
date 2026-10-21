@@ -70,6 +70,32 @@ test("Tageswerte stehen vor den Mahlzeiten und der Eintrag-Button bleibt erreich
     t.dom.window.close();
   }
 });
+test("Wassergläser füllen sich in 250-ml-Schritten und bleiben pro Tag gespeichert", () => {
+  const t = setup();
+  try {
+    const day = model.today();
+    t.click('[data-action="water-set"][data-count="1"]');
+    assert.equal(t.data().water[day], 1);
+    assert.match(t.q(".water-heading > strong").textContent, /250/);
+    assert.equal(t.q(".water-glass.filled").getAttribute("aria-pressed"), "true");
+    t.click('[data-action="water-set"][data-count="3"]');
+    assert.equal(t.data().water[day], 3);
+    assert.equal(t.q(".water-glasses").querySelectorAll(".filled").length, 3);
+    t.click('[data-action="water-set"][data-count="3"]');
+    assert.equal(t.data().water[day], 2);
+    t.click('[data-action="water-add"]');
+    assert.equal(t.data().water[day], 3);
+    t.click('[data-action="day"][data-delta="-1"]');
+    assert.equal(t.q(".water-heading > strong").textContent.trim(), "0 ml");
+    t.click('[data-action="day"][data-delta="1"]');
+    assert.equal(t.q(".water-glasses").querySelectorAll(".filled").length, 3);
+    const reloaded = setup(JSON.stringify(t.data()));
+    assert.equal(reloaded.q(".water-glasses").querySelectorAll(".filled").length, 3);
+    reloaded.dom.window.close();
+  } finally {
+    t.dom.window.close();
+  }
+});
 test("Ziele direkt an Kalorien- und Makrokarten bearbeiten", () => {
   const t = setup();
   try {
@@ -331,3 +357,4 @@ test("Speicherfehler melden und defekte lokale Daten nicht überschreiben", () =
     t.dom.window.close();
   }
 });
+

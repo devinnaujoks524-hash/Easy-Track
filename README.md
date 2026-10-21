@@ -24,7 +24,8 @@ Der Ordner `dist/` ist die vollständige statische Website und lässt sich auf e
 
 ## Funktionen
 
-- **Heute:** Nach der Datumsnavigation stehen Kalorien und Makros direkt oben; Mahlzeiten und der zentrale Hinzufügen-Button folgen darunter. Die Übersicht zeigt Kalorienring, Tagesziel, verbleibende Kalorien und eine sachliche Anzeige bei Überschreitung. Kleine Bearbeiten-Buttons an Kalorien und Makros öffnen die Zielwerte direkt für den ausgewählten Tag.
+- **Heute:** Nach der Datumsnavigation stehen Kalorien und Makros direkt oben; darunter folgt die Wasseranzeige mit 250-ml-Gläsern, anschließend Mahlzeiten und der zentrale Hinzufügen-Button. Die Übersicht zeigt Kalorienring, Tagesziel, verbleibende Kalorien und eine sachliche Anzeige bei Überschreitung. Kleine Bearbeiten-Buttons an Kalorien und Makros öffnen die Zielwerte direkt für den ausgewählten Tag.
+- **Wasser:** Ein Tipp auf ein Glas füllt die Anzeige bis zu diesem Glas. Ein erneuter Tipp auf das zuletzt gefüllte Glas nimmt 250 ml zurück; über „+ 250 ml“ lassen sich weitere Gläser hinzufügen. Der Stand wird für jeden lokalen Kalendertag separat gespeichert.
 - **Erfassen:** Suche nach Name/Marke, Favoriten, deduplizierte letzte Lebensmittel, Gramm, Milliliter und klar definierte Portionen, Dezimalkomma, sofortige Nährwertvorschau und Feldvalidierung.
 - **Lebensmittel:** 16 explizit gekennzeichnete Beispiellebensmittel sowie eigene Lebensmittel mit optionaler Marke und Portionsdefinition; bearbeiten und löschen.
 - **Einträge:** Menge, Datum und Mahlzeit ändern; löschen und zehn Sekunden lang rückgängig machen; einzelne Einträge oder vollständige Mahlzeiten auf ein frei gewähltes Datum und in einen Mahlzeitenbereich kopieren.
@@ -56,7 +57,7 @@ tests/app.test.mjs    Integrationstests mit Formularen, Events und Local Storage
 
 ## Prüfung
 
-15 automatisierte Tests bestehen. Sie prüfen insbesondere die Reihenfolge der Tageswerte und die Erreichbarkeit des Hinzufügen-Buttons, Anlegen und Erfassen, Mengenänderungen und Summen, Löschen/Rückgängig, Mahlzeitenkopien, Rezeptzutaten und Teilportionen, unveränderliche historische Nährwerte, direkte Zielbearbeitung einschließlich alleiniger Makroziele, Zielwechsel, Reload, Export-/Import-Rundlauf, fehlerhafte Importe, ungültige Mengen, Datumsgrenzen und Schutz beschädigter Daten.
+16 automatisierte Tests bestehen. Sie prüfen insbesondere die Reihenfolge der Tageswerte und die Erreichbarkeit des Hinzufügen-Buttons, Wasserstand und tageweise Speicherung, Anlegen und Erfassen, Mengenänderungen und Summen, Löschen/Rückgängig, Mahlzeitenkopien, Rezeptzutaten und Teilportionen, unveränderliche historische Nährwerte, direkte Zielbearbeitung einschließlich alleiniger Makroziele, Zielwechsel, Reload, Export-/Import-Rundlauf, fehlerhafte Importe, ungültige Mengen, Datumsgrenzen und Schutz beschädigter Daten.
 
 Zusätzlich im integrierten Chromium-Browser geprüft: eigenes Lebensmittel mit Dezimalkomma anlegen, 1,5 Portionen erfassen, korrekte Kalorien-/Makroanzeige, Neuladen sowie die responsive Ansicht bei 390 Pixel Breite. Die Integrationstests verwenden jsdom; sie ersetzen keine umfassende Prüfung in Safari/Firefox oder mit einem Screenreader.
 
@@ -65,6 +66,7 @@ Zusätzlich im integrierten Chromium-Browser geprüft: eigenes Lebensmittel mit 
 - Die Beispieldaten sind **nicht verifiziert** und keine vollständige Lebensmitteldatenbank. Maßgeblich sind die Angaben des jeweiligen Produkts.
 - Daten sind an Browser, Gerät und Website-Adresse gebunden. Ein anderer Port, eine andere Domain oder ein anderes Browserprofil besitzt einen separaten Speicher. Beim Wechsel die Daten exportieren und wieder importieren.
 - Browserdaten können gelöscht werden; regelmäßige JSON-Backups sind sinnvoll. Der Browser begrenzt den verfügbaren lokalen Speicher. Bei Erreichen des Limits zeigt die App einen Speicherfehler statt eines erfolgreichen Speicherns an.
-- Kein Barcode-Scanner, keine Fotoerkennung, kein Wasser-/Gewichtsverlauf, keine Gesundheitsintegrationen, keine Konten und keine Cloud-Synchronisierung.
+- Kein Barcode-Scanner, keine Fotoerkennung, kein Gewichtsverlauf, keine Gesundheitsintegrationen, keine Konten und keine Cloud-Synchronisierung.
 - Keine installierbare Offline-PWA. Lokal muss der mitgelieferte Server laufen; bei Hosting wird die App über die jeweilige Website geladen. Die optionalen Webfonts werden von Google Fonts geladen, mit Systemschriften als Fallback. Tagebuchdaten werden dabei nicht übertragen.
 - Die lokale Vorschau kann ausdrücklich als „Test“ gekennzeichnete Daten aus der Browserprüfung enthalten. Frische Browserprofile und neue Hosting-Adressen beginnen leer.
+

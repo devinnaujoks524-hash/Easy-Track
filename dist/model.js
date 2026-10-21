@@ -134,6 +134,7 @@ export const initial = () => ({
   recipes: [],
   favorites: [],
   goals: [],
+  water: {},
   theme: "light",
 });
 const finite = (v, min = 0, max = 1e9) =>
@@ -174,6 +175,18 @@ export function validateData(d) {
     fail();
   for (const k of ["foods", "entries", "recipes", "favorites", "goals"])
     if (!Array.isArray(d[k]) || d[k].length > 100000) fail();
+  const water = d.water === undefined ? {} : d.water;
+  if (
+    !water ||
+    typeof water !== "object" ||
+    Array.isArray(water) ||
+    Object.keys(water).length > 100000 ||
+    !Object.entries(water).every(
+      ([day, glasses]) =>
+        validDate(day) && Number.isInteger(glasses) && glasses >= 1 && glasses <= 100,
+    )
+  )
+    fail();
   if (
     !d.foods.every((f) => foodOK(f) && f.source === "custom") ||
     !d.favorites.every(idOK) ||
@@ -236,6 +249,8 @@ export function validateData(d) {
     recipes: d.recipes,
     favorites: [...new Set(d.favorites)],
     goals: d.goals,
+    water,
     theme: d.theme,
   });
 }
+

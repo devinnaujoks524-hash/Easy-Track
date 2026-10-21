@@ -68,12 +68,18 @@ test("Zeitabhängige Ziele, Wochenstatistik ohne leere Tage", () => {
 test("Export-Rundlauf und strenge Prüfung aller Datenbereiche", () => {
   const d = m.initial();
   d.entries.push(m.snapshot(m.EXAMPLES[0], 33.3, "g", "2026-10-20", "Snacks"));
+  d.water["2026-10-20"] = 3;
   assert.deepEqual(m.validateData(JSON.parse(JSON.stringify(d))), d);
+  const oldExport = { ...d };
+  delete oldExport.water;
+  assert.deepEqual(m.validateData(oldExport).water, {});
   const invalid = [
     null,
     {},
     { ...d, version: 2 },
     { ...d, theme: "bad" },
+    { ...d, water: { "2026-02-30": 1 } },
+    { ...d, water: { "2026-10-20": -1 } },
     { ...d, foods: [{}] },
     {
       ...d,
@@ -95,3 +101,4 @@ test("Export-Rundlauf und strenge Prüfung aller Datenbereiche", () => {
   for (const bad of invalid) assert.throws(() => m.validateData(bad));
   assert.equal(d.entries.length, 1);
 });
+
