@@ -45,6 +45,31 @@ function setup(saved) {
     data = () => JSON.parse(w.localStorage.getItem("easy-track.v1"));
   return { dom, w, q, click, fill, submit, data };
 }
+test("Tageswerte stehen vor den Mahlzeiten und der Eintrag-Button bleibt erreichbar", () => {
+  const t = setup();
+  try {
+    const main = t.q("#main");
+    const overview = t.q(".overview");
+    const meals = t.q(".meal-section-heading");
+    assert.ok(main.contains(overview));
+    assert.ok(
+      overview.compareDocumentPosition(meals) &
+        t.w.Node.DOCUMENT_POSITION_FOLLOWING,
+    );
+    assert.ok(
+      t.q(".date-controls").compareDocumentPosition(overview) &
+        t.w.Node.DOCUMENT_POSITION_FOLLOWING,
+    );
+    assert.equal(
+      t.q(".meal-section-heading [data-action='choose-meal']") !== null,
+      true,
+    );
+    t.click(".meal-section-heading [data-action='choose-meal']");
+    assert.match(t.q("#dialog-title").textContent, /eintragen/);
+  } finally {
+    t.dom.window.close();
+  }
+});
 test("Ziele direkt an Kalorien- und Makrokarten bearbeiten", () => {
   const t = setup();
   try {
