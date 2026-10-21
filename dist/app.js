@@ -109,27 +109,31 @@ let morphOrigin = null,
 const canMorph = () =>
   typeof modal.animate === "function" &&
   !window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
-function morphTransform(from) {
+const num = (v, d) => (Number.isFinite(parseFloat(v)) ? parseFloat(v) : d);
+function clipFor(from, radius) {
   const to = modal.getBoundingClientRect();
-  const dx = from.left + from.width / 2 - (to.left + to.width / 2);
-  const dy = from.top + from.height / 2 - (to.top + to.height / 2);
-  return `translate(${dx}px, ${dy}px) scale(${from.width / to.width}, ${from.height / to.height})`;
+  return `inset(${from.rect.top - to.top}px ${to.right - from.rect.right}px ${to.bottom - from.rect.bottom}px ${from.rect.left - to.left}px round ${radius}px)`;
 }
+const fullClip = (r) => `inset(0px 0px 0px 0px round ${r}px)`;
 function morphIn(from) {
-  const ease = "cubic-bezier(0.2, 1.2, 0.3, 1)";
+  const r = num(getComputedStyle(modal).borderTopLeftRadius, 24);
+  const opts = { duration: 520, easing: "cubic-bezier(0.22, 0.9, 0.25, 1)" };
   modal.animate(
-    [
-      { transform: morphTransform(from), borderRadius: "48px" },
-      { transform: "none", borderRadius: "24px" },
-    ],
-    { duration: 560, easing: ease },
+    [{ clipPath: clipFor(from, from.radius) }, { clipPath: fullClip(r) }],
+    opts,
   );
   modal.querySelectorAll(".dialog-head, .dialog-body").forEach((el) =>
-    el.animate(
-      [{ opacity: 0 }, { opacity: 0, offset: 0.4 }, { opacity: 1 }],
-      { duration: 560, easing: "ease-out" },
-    ),
+    el.animate([{ opacity: 0 }, { opacity: 0, offset: 0.45 }, { opacity: 1 }], {
+      duration: 520,
+      easing: "ease-out",
+    }),
   );
+  try {
+    modal.animate([{ opacity: 0 }, { opacity: 1 }], {
+      duration: 300,
+      pseudoElement: "::backdrop",
+    });
+  } catch {}
 }
 function openDialog(title, body, wide = false) {
   if (closeAnim) {
@@ -160,14 +164,32 @@ function openDialog(title, body, wide = false) {
 function closeDialog() {
   if (morphBack && modal.open && canMorph()) {
     if (closeAnim) return;
-    const from = morphBack;
+    const from = {
+      rect: morphButton?.isConnected
+        ? morphButton.getBoundingClientRect()
+        : morphBack.rect,
+      radius: morphBack.radius,
+    };
+    const r = num(getComputedStyle(modal).borderTopLeftRadius, 24);
+    const duration = 420;
     const a = (closeAnim = modal.animate(
-      [
-        { transform: "none", opacity: 1, borderRadius: "24px" },
-        { transform: morphTransform(from), opacity: 0.2, borderRadius: "48px" },
-      ],
-      { duration: 320, easing: "cubic-bezier(0.5, 0, 0.75, 0.4)", fill: "forwards" },
+      [{ clipPath: fullClip(r) }, { clipPath: clipFor(from, from.radius) }],
+      { duration, easing: "cubic-bezier(0.65, 0, 0.25, 1)", fill: "forwards" },
     ));
+    modal.querySelectorAll(".dialog-head, .dialog-body").forEach((el) =>
+      el.animate([{ opacity: 1 }, { opacity: 0 }], {
+        duration: duration * 0.4,
+        easing: "ease-in",
+        fill: "forwards",
+      }),
+    );
+    try {
+      modal.animate([{ opacity: 1 }, { opacity: 0 }], {
+        duration,
+        fill: "forwards",
+        pseudoElement: "::backdrop",
+      });
+    } catch {}
     a.onfinish = () => {
       if (closeAnim !== a) return;
       closeAnim = null;
@@ -822,7 +844,10 @@ document.addEventListener("click", (e) => {
       app.querySelector(`[data-action="favorite"][data-id="${id}"]`)?.focus();
   } else if (a === "edit-goal") {
     if (canMorph()) {
-      morphOrigin = b.getBoundingClientRect();
+      morphOrigin = {
+        rect: b.getBoundingClientRect(),
+        radius: num(getComputedStyle(b).borderTopLeftRadius, 12),
+      };
       morphButton = b;
       b.style.visibility = "hidden";
     }

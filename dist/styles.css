@@ -2370,6 +2370,10 @@ dialog.morph[open] {
   animation: none;
   transform-origin: center;
 }
+dialog.morph[open] {
+  will-change: clip-path;
+}
 dialog.morph[open]::backdrop {
-  animation: fade 0.35s ease-out;
+  animation: none;
+  backdrop-filter: none;
 }
