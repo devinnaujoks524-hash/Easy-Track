@@ -155,7 +155,7 @@ test("Makroziele ohne Kalorienziel direkt speichern und später ergänzen", () =
 test("Lebensmittel → Eintrag → Menge ändern → Löschen/Rückgängig → Kopieren → Reload", () => {
   const t = setup();
   try {
-    t.click('[data-page="foods"]');
+    t.click('[data-action="add"][data-meal="Frühstück"]');
     t.click('[data-action="new-food"]');
     for (const [k, v] of Object.entries({
       name: "Test-Skyr",
@@ -171,8 +171,6 @@ test("Lebensmittel → Eintrag → Menge ändern → Löschen/Rückgängig → K
     t.submit("#food-form");
     let d = t.data();
     assert.equal(d.foods[0].fat, 0.2);
-    t.click('[data-action="food-add"]');
-    t.click('[data-action="choose"][data-meal="Frühstück"]');
     t.fill("amount", "1,5");
     assert.match(t.q("#amount-preview").textContent, /135/);
     t.submit("#amount-form");
@@ -292,7 +290,7 @@ test("Lebensmitteländerungen verändern gespeicherte Einträge nicht", () => {
   d.entries.push(model.snapshot(f, 100, "g", model.today(), "Frühstück"));
   const t = setup(JSON.stringify(d));
   try {
-    t.click('[data-page="foods"]');
+    t.click('[data-action="add"][data-meal="Frühstück"]');
     t.click('[data-action="edit-food"]');
     t.fill("kcal", "500");
     t.submit("#food-form");

@@ -160,7 +160,6 @@ function render() {
   const nav = [
     ["today", "home", "Heute"],
     ["history", "chart", "Verlauf"],
-    ["foods", "food", "Lebensmittel"],
     ["recipes", "book", "Rezepte"],
     ["settings", "settings", "Einstellungen"],
   ];
@@ -289,7 +288,7 @@ function foodRows(list, picker = false) {
     ? list
         .map(
           (f) =>
-            `<div class="food-row">${btn(icon("star", 19), "favorite", `data-id="${f.id}" aria-label="${data.favorites.includes(f.id) ? "Favorit entfernen" : "Als Favorit markieren"}: ${esc(f.name)}" aria-pressed="${data.favorites.includes(f.id)}"`, "icon-button favorite " + (data.favorites.includes(f.id) ? "selected" : ""))}<button type="button" class="food-main" data-action="${picker ? "pick-food" : "food-add"}" data-id="${f.id}"><strong>${esc(f.name)}</strong><span>${f.brand ? esc(f.brand) + " · " : ""}${f.source === "custom" ? "Eigenes Lebensmittel" : "Beispieldaten"} · pro 100 ${f.basis}</span></button><span class="food-kcal"><strong>${fmt(f.kcal)}</strong> kcal</span>${!picker && f.source === "custom" ? btn(icon("edit", 18), "edit-food", `data-id="${f.id}" aria-label="${esc(f.name)} bearbeiten"`, "icon-button") : ""}${btn(icon("plus", 18), picker ? "pick-food" : "food-add", `data-id="${f.id}" aria-label="${esc(f.name)} auswählen"`, "icon-button plus")}</div>`,
+            `<div class="food-row">${btn(icon("star", 19), "favorite", `data-id="${f.id}" aria-label="${data.favorites.includes(f.id) ? "Favorit entfernen" : "Als Favorit markieren"}: ${esc(f.name)}" aria-pressed="${data.favorites.includes(f.id)}"`, "icon-button favorite " + (data.favorites.includes(f.id) ? "selected" : ""))}<button type="button" class="food-main" data-action="${picker ? "pick-food" : "food-add"}" data-id="${f.id}"><strong>${esc(f.name)}</strong><span>${f.brand ? esc(f.brand) + " · " : ""}${f.source === "custom" ? "Eigenes Lebensmittel" : "Beispieldaten"} · pro 100 ${f.basis}</span></button><span class="food-kcal"><strong>${fmt(f.kcal)}</strong> kcal</span>${f.source === "custom" ? btn(icon("edit", 18), "edit-food", `data-id="${f.id}" aria-label="${esc(f.name)} bearbeiten"`, "icon-button") : ""}${btn(icon("plus", 18), picker ? "pick-food" : "food-add", `data-id="${f.id}" aria-label="${esc(f.name)} auswählen"`, "icon-button plus")}</div>`,
         )
         .join("")
     : `<div class="empty"><span class="empty-icon">${icon("search", 30)}</span><h3>${(picker ? pickerFilter : foodFilter) === "favorites" ? "Du hast noch keine Favoriten." : "Keine Lebensmittel gefunden."}</h3><p>${(picker ? pickerFilter : foodFilter) === "favorites" ? "Markiere Lebensmittel mit dem Stern, um sie hier schnell wiederzufinden." : "Lege ein eigenes Lebensmittel mit den Angaben auf der Verpackung an."}</p>${btn("Eigenes Lebensmittel anlegen", "new-food", "", "button primary")}</div>`;
@@ -464,7 +463,8 @@ function submitFood(form) {
       else d.foods.push(f);
     }, "Lebensmittel gespeichert.")
   ) {
-    if (context.returnToPicker) {
+    if (context.returnToPicker && context.editFoodId) picker();
+    else if (context.returnToPicker) {
       context.entry = null;
       amountDialog(f);
     } else closeDialog();
