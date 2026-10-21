@@ -1,35 +1,42 @@
 @import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;450;500;550;600;650;700&family=Manrope:wght@400;500;600;650;700;750;800&display=swap");
 :root {
   color-scheme: light;
-  --bg: #f7f8f4;
+  --bg: #f4f7f6;
   --surface: #fff;
-  --surface2: #f3f5ef;
-  --text: #253a31;
-  --muted: #6c776f;
-  --green: #285d45;
-  --green-soft: #eaf0e6;
-  --border: #e5e9e1;
-  --p: #ad7943;
-  --c: #6485a7;
-  --f: #9277b0;
-  --shadow: 0 4px 20px #263b2904;
-  --danger: #a13e35;
+  --surface2: #eef3f1;
+  --text: #16302b;
+  --muted: #62756f;
+  --green: #0f7b63;
+  --green-2: #15a07f;
+  --green-soft: #e0f3ed;
+  --border: #dde7e3;
+  --p: #e0892f;
+  --c: #3f82d4;
+  --f: #8a63d2;
+  --shadow: 0 1px 2px #16302b0a, 0 8px 24px #16302b0d;
+  --shadow-lg: 0 2px 4px #16302b0a, 0 14px 34px #16302b14;
+  --focus: #15a07f;
+  --radius: 18px;
+  --danger: #c0392b;
 }
 :root[data-theme="dark"] {
   color-scheme: dark;
-  --bg: #141e19;
-  --surface: #1c2922;
-  --surface2: #243329;
-  --text: #edf2e9;
-  --muted: #b0bcb1;
-  --green: #a3c9a7;
-  --green-soft: #314735;
-  --border: #344438;
-  --p: #e6b37d;
-  --c: #9dbde1;
-  --f: #c6ade1;
+  --bg: #0d1816;
+  --surface: #15231f;
+  --surface2: #1c2e29;
+  --text: #e8f3ef;
+  --muted: #9bb2aa;
+  --green: #4fd1ac;
+  --green-2: #2fb08d;
+  --green-soft: #1d3d34;
+  --border: #284038;
+  --p: #f2a65a;
+  --c: #7db3f2;
+  --f: #b79bf0;
   --shadow: none;
-  --danger: #ffaaa0;
+  --shadow-lg: 0 14px 34px #0006;
+  --focus: #4fd1ac;
+  --danger: #ff9a8d;
 }
 * {
   box-sizing: border-box;
@@ -55,9 +62,13 @@ body {
     "Segoe UI",
     sans-serif;
   font-size: 15px;
-  background: var(--bg);
+  background:
+    radial-gradient(900px 420px at 85% -120px, var(--green-soft), transparent 70%),
+    var(--bg);
+  background-attachment: fixed;
   color: var(--text);
   line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
 }
 button,
 input,
@@ -131,7 +142,7 @@ a {
   color: var(--green);
 }
 :focus-visible {
-  outline: 3px solid #b8854e;
+  outline: 3px solid var(--focus);
   outline-offset: 4px;
 }
 input:focus-visible,
@@ -141,9 +152,17 @@ textarea:focus-visible {
 }
 button {
   border: 0;
+  transition:
+    background-color 0.15s,
+    box-shadow 0.15s,
+    transform 0.15s,
+    filter 0.15s;
 }
 button:hover {
   filter: brightness(0.97);
+}
+button:active:not(:disabled) {
+  transform: scale(0.98);
 }
 .skip {
   position: fixed;
@@ -165,6 +184,7 @@ button:hover {
   display: flex;
   flex-direction: column;
   z-index: 10;
+  box-shadow: 4px 0 24px #16302b08;
 }
 .brand {
   display: flex;
@@ -178,14 +198,15 @@ button:hover {
   padding-left: 5px;
 }
 .brand-symbol {
-  background: var(--green);
-  color: var(--surface);
+  background: linear-gradient(135deg, var(--green-2), var(--green));
+  color: #fff;
   width: 42px;
   height: 44px;
   border-radius: 14px;
   display: grid;
   place-items: center;
   transform: rotate(-5deg);
+  box-shadow: 0 6px 14px #0f7b6340;
 }
 .brand-light {
   font-weight: 500;
@@ -217,16 +238,22 @@ nav {
   width: 100%;
   background: none;
   padding: 14px 17px;
-  border-radius: 10px;
+  border-radius: 14px;
   color: var(--muted);
   text-align: left;
   font-size: 14px;
   font-weight: 550;
 }
+.nav-item:hover:not(.active) {
+  background: var(--surface2);
+  color: var(--text);
+  filter: none;
+}
 .nav-item.active {
   background: var(--green-soft);
   color: var(--green);
   font-weight: 700;
+  box-shadow: inset 3px 0 0 var(--green);
 }
 .nav-item.active:after {
   content: "";
@@ -307,7 +334,7 @@ main {
 }
 .button {
   min-height: 43px;
-  border-radius: 9px;
+  border-radius: 12px;
   padding: 11px 17px;
   display: inline-flex;
   align-items: center;
@@ -319,13 +346,26 @@ main {
   text-decoration: none;
 }
 .primary {
-  background: var(--green);
-  color: var(--surface);
+  background: linear-gradient(135deg, var(--green-2), var(--green));
+  color: #fff;
+  box-shadow: 0 6px 16px #0f7b6338;
+}
+:root[data-theme="dark"] .primary {
+  color: #06251d;
+  box-shadow: none;
+}
+.primary:hover {
+  filter: brightness(1.06);
 }
 .secondary {
   background: var(--surface);
   color: var(--text);
   border: 1px solid var(--border);
+  box-shadow: 0 1px 2px #16302b0a;
+}
+.secondary:hover {
+  border-color: var(--green);
+  filter: none;
 }
 .button.small {
   padding: 7px 11px;
@@ -403,7 +443,7 @@ main {
   cursor: pointer;
 }
 .date-picker:focus-within {
-  outline: 3px solid #b8854e;
+  outline: 3px solid var(--focus);
   border-radius: 6px;
 }
 .overview {
@@ -420,12 +460,22 @@ main {
 .recipe-card {
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: 16px;
+  border-radius: var(--radius);
   box-shadow: var(--shadow);
+}
+.meal-card,
+.recipe-card {
+  transition:
+    box-shadow 0.2s,
+    transform 0.2s;
+}
+.meal-card:hover,
+.recipe-card:hover {
+  box-shadow: var(--shadow-lg);
 }
 .calorie-card {
   padding: 23px 26px;
-  background: linear-gradient(125deg, var(--surface), var(--green-soft));
+  background: linear-gradient(125deg, var(--surface) 30%, var(--green-soft));
 }
 .card-label {
   display: flex;
@@ -454,12 +504,13 @@ main {
   gap: 4px;
   min-height: 32px;
   padding: 4px 6px;
-  border-radius: 7px;
+  border-radius: 9px;
   background: var(--surface);
   color: var(--green);
   font-size: 11px;
   font-weight: 650;
   letter-spacing: 0;
+  border: 1px solid var(--border);
 }
 .goal-edit:hover {
   background: var(--green-soft);
@@ -477,7 +528,12 @@ main {
   height: 166px;
   flex-shrink: 0;
   border-radius: 50%;
-  background: conic-gradient(var(--green) var(--progress), var(--border) 0);
+  background: conic-gradient(
+    var(--green-2),
+    var(--green) var(--progress),
+    var(--border) 0
+  );
+  filter: drop-shadow(0 6px 14px #0f7b6325);
   display: grid;
   place-items: center;
   position: relative;
@@ -537,8 +593,8 @@ main {
 .water-card {
   padding: 16px 20px 14px;
   margin-bottom: 26px;
-  --water: #3488ad;
-  --water-soft: #dceff6;
+  --water: #2a8fd0;
+  --water-soft: #dceffb;
 }
 .water-heading {
   display: flex;
@@ -665,7 +721,7 @@ main {
   background: var(--f);
 }
 .track {
-  height: 5px;
+  height: 7px;
   background: var(--surface2);
   border-radius: 20px;
   margin-top: 8px;
@@ -727,26 +783,42 @@ main {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border-radius: 12px;
+  border-radius: 14px;
   flex-shrink: 0;
   background: var(--green-soft);
   color: var(--green);
 }
 .m0 {
-  background: #faf1dd;
-  color: #a47b34;
+  background: #fff0d6;
+  color: #c27a14;
 }
 .m1 {
-  background: #eaf1e6;
-  color: #65835b;
+  background: #dff5e6;
+  color: #2f9a5b;
 }
 .m2 {
-  background: #edf0f7;
-  color: #7484a0;
+  background: #e1ecfb;
+  color: #3f72c4;
 }
 .m3 {
-  background: #f4edf4;
-  color: #9c76a1;
+  background: #efe5fb;
+  color: #8a56c8;
+}
+:root[data-theme="dark"] .m0 {
+  background: #43361b;
+  color: #f2b45a;
+}
+:root[data-theme="dark"] .m1 {
+  background: #1d3d2b;
+  color: #6fd49a;
+}
+:root[data-theme="dark"] .m2 {
+  background: #1f3250;
+  color: #8fb7f2;
+}
+:root[data-theme="dark"] .m3 {
+  background: #33264d;
+  color: #c0a2f2;
 }
 .meal-head h3 {
   margin: 0;
@@ -786,8 +858,8 @@ main {
   justify-content: center;
   gap: 8px;
   background: none;
-  border: 1px dashed var(--border);
-  border-radius: 9px;
+  border: 1.5px dashed color-mix(in srgb, var(--green) 40%, var(--border));
+  border-radius: 12px;
   width: 100%;
   min-height: 40px;
   color: var(--green);
@@ -905,7 +977,7 @@ summary {
 .filter {
   background: none;
   border: 1px solid transparent;
-  border-radius: 8px;
+  border-radius: 999px;
   padding: 8px 13px;
   min-height: 38px;
   color: var(--muted);
@@ -923,8 +995,8 @@ summary {
   font-size: 11px;
   color: var(--muted);
   background: var(--surface2);
-  padding: 12px;
-  border-radius: 8px;
+  padding: 12px 14px;
+  border-radius: 12px;
   margin: 18px 0;
 }
 .food-row {
@@ -983,7 +1055,7 @@ summary {
   width: 76px;
   height: 76px;
   background: var(--green-soft);
-  border-radius: 24px;
+  border-radius: 28px;
   color: var(--green);
   margin-bottom: 20px;
 }
@@ -1009,7 +1081,7 @@ summary {
 }
 .recipe-art {
   height: 130px;
-  background: var(--green-soft);
+  background: linear-gradient(135deg, var(--green-soft), color-mix(in srgb, var(--green-2) 22%, var(--green-soft)));
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1084,7 +1156,7 @@ summary {
   opacity: 0;
 }
 .file-label:focus-within {
-  outline: 3px solid #b8854e;
+  outline: 3px solid var(--focus);
   outline-offset: 3px;
 }
 .goal-history {
@@ -1159,9 +1231,9 @@ hr {
 }
 .bar {
   width: 100%;
-  background: var(--green);
-  border-radius: 6px 6px 2px 2px;
-  opacity: 0.72;
+  background: linear-gradient(180deg, var(--green-2), var(--green));
+  border-radius: 8px 8px 3px 3px;
+  opacity: 0.6;
 }
 .chart-day.current .bar {
   opacity: 1;
@@ -1193,8 +1265,13 @@ hr {
   text-align: left;
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: 12px;
+  border-radius: 16px;
   padding: 20px 23px;
+  box-shadow: var(--shadow);
+}
+.history-day:hover {
+  border-color: var(--green);
+  filter: none;
 }
 .history-day > div:first-child {
   flex: 1;
@@ -1222,18 +1299,18 @@ dialog {
   background: var(--surface);
   color: var(--text);
   border: 1px solid var(--border);
-  border-radius: 20px;
+  border-radius: 24px;
   padding: 0;
   width: min(540px, calc(100% - 28px));
   max-height: 90dvh;
-  box-shadow: 0 25px 100px #0003;
+  box-shadow: 0 30px 90px #0a1f1a40;
 }
 dialog.wide {
   width: min(650px, calc(100% - 28px));
 }
 dialog::backdrop {
-  background: #14261ecc;
-  backdrop-filter: blur(4px);
+  background: #0a1f1acc;
+  backdrop-filter: blur(6px);
 }
 .dialog-head {
   display: flex;
@@ -1277,11 +1354,20 @@ textarea {
   background: var(--surface);
   color: var(--text);
   border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 11px 12px;
+  border-radius: 12px;
+  padding: 11px 14px;
   font-size: 14px;
   margin-top: 7px;
   min-height: 44px;
+  transition:
+    border-color 0.15s,
+    box-shadow 0.15s;
+}
+input:focus,
+select:focus,
+textarea:focus {
+  border-color: var(--green);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--green) 18%, transparent);
 }
 input[aria-invalid="true"] {
   border-color: var(--danger);
@@ -1330,7 +1416,7 @@ textarea {
   grid-template-columns: repeat(4, 1fr);
   background: var(--surface2);
   padding: 18px 12px;
-  border-radius: 12px;
+  border-radius: 16px;
   margin: 18px 0 22px;
   gap: 8px;
   text-align: center;
@@ -1361,8 +1447,12 @@ textarea {
   padding: 12px;
   background: var(--surface2);
   border: 1px solid var(--border);
-  border-radius: 12px;
+  border-radius: 16px;
   text-align: left;
+}
+.meal-choice:hover {
+  border-color: var(--green);
+  filter: none;
 }
 .meal-choice > span:nth-child(2) {
   flex: 1;
@@ -1417,8 +1507,8 @@ textarea {
   background: var(--text);
   color: var(--surface);
   padding: 13px 20px;
-  box-shadow: 0 8px 25px #0002;
-  border-radius: 12px;
+  box-shadow: 0 12px 32px #0a1f1a40;
+  border-radius: 16px;
   max-width: 90vw;
   z-index: 100;
   display: flex;
