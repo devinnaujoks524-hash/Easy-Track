@@ -2347,3 +2347,8 @@ dialog[open]::backdrop {
 .ring strong {
   transition: color 0.3s;
 }
+
+/* Kalorienkarte: nur der Ring */
+.calorie-main:has(> .ring:only-child) {
+  justify-content: center;
+}
