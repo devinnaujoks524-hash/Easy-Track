@@ -2333,3 +2333,16 @@ dialog[open]::backdrop {
   border-color: var(--mc);
   box-shadow: 0 0 0 3px color-mix(in srgb, var(--mc) 22%, transparent);
 }
+
+/* Kalorienring: übrig bzw. zu viel */
+.ring.over {
+  background: conic-gradient(var(--danger) 100%, var(--border) 0);
+  filter: drop-shadow(0 6px 14px #c0392b30);
+}
+.ring.over strong,
+.ring.over span {
+  color: var(--danger);
+}
+.ring strong {
+  transition: color 0.3s;
+}
